@@ -201,7 +201,7 @@ void parseBetterJSAlternative(String code){
 ```
 ---
 
-# 命名问题
+# <!-- fit --> 2. 命名问题
 
 ---
 
@@ -213,33 +213,36 @@ void parseBetterJSAlternative(String code){
 
 ---
 
-## 使用有意义并且可读的变量名称
+## 坏味道：命名无意义
 
-**不好的：**
-```
+ 
+```java
  String yyyymmdstr = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 ```
+---
 
-**好的：**
+## 补救办法：使用有意义并且可读的变量名称
+ 
 ```
  String currentDate = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 ```
 ---
 
-## 使用可搜索的名称
+## 坏味道：魔法值
 
-我们要阅读的代码比要写的代码多得多， 所以我们写出的代码的可读性和可搜索性是很重要的。 使用没有
-意义的变量名将会导致我们的程序难于理解， 将会伤害我们的读者， 所以请使用可搜索的变量名。
+<!-- 我们要阅读的代码比要写的代码多得多， 所以我们写出的代码的可读性和可搜索性是很重要的。 使用没有
+意义的变量名将会导致我们的程序难于理解， 将会伤害我们的读者， 所以请使用可搜索的变量名。 -->
 
-**不好的：**
-```
+``` java
 // 艹， 86400000 是什么鬼？
  setTimeout(blastOff, 86400000);
 
 ```
+---
 
-**好的：**
-```
+## 补救方法：使用可搜索的名称
+
+``` java
 // 将它们声明为全局常量。
  public static final int MILLISECONDS_IN_A_DAY = 86400000;
  setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
@@ -247,18 +250,19 @@ void parseBetterJSAlternative(String code){
 ```
 ---
 
-## 使用解释性的变量
-**不好的：**
-```
+## 坏味道：变量使用条件语句
+ 
+```java
  String address = "One Infinite Loop, Cupertino 95014";
  String cityZipCodeRegex = "/^[^,\\\\]+[,\\\\\\s]+(.+?)\\s*(\\d{5})?$/";
 
  saveCityZipCode(address.split(cityZipCodeRegex)[0],
  address.split(cityZipCodeRegex)[1]);
 ```
+--- 
 
-**好的：**
-```
+## 补救办法：使用解释性的变量
+```java 
   String address = "One Infinite Loop, Cupertino 95014";
   String cityZipCodeRegex = "/^[^,\\\\]+[,\\\\\\s]+(.+?)\\s*(\\d{5})?$/";
 
@@ -269,12 +273,9 @@ void parseBetterJSAlternative(String code){
 ```
 ---
 
-### 避免心理映射
+## 坏味道：使用隐式的缩写
 
-显示比隐式更好
-
-**不好的：**
-```
+```java
  String [] l = {"Austin", "New York", "San Francisco"};
 
         for (int i = 0; i < l.length; i++) {
@@ -288,9 +289,10 @@ void parseBetterJSAlternative(String code){
             dispatch(li);
         }
 ```
+---
+## 补救办法：使用显示的命名方式
 
-**好的：**
-```
+```java
  String[] locations = {"Austin", "New York", "San Francisco"};
 
         for (String location : locations) {
@@ -304,24 +306,25 @@ void parseBetterJSAlternative(String code){
 ```
 ---
 
-### 函数参数 (两个以下最理想)
+## 坏味道： 方法参数过长（超过2个）
 
-限制函数参数的个数是非常重要的， 因为这样将使你的函数容易进行测试。 一旦超过三个参数将会导致组
+<!-- 限制函数参数的个数是非常重要的， 因为这样将使你的函数容易进行测试。 一旦超过三个参数将会导致组
 合爆炸， 因为你不得不编写大量针对每个参数的测试用例。
 
 没有参数是最理想的， 一个或者两个参数也是可以的， 三个参数应该避免， 超过三个应该被重构。 通常，
 如果你有一个超过两个函数的参数， 那就意味着你的函数尝试做太多的事情。 如果不是， 多数情况下一个
 更高级对象可能会满足需求。
 
-当你发现你自己需要大量的参数时， 你可以使用一个对象。
+当你发现你自己需要大量的参数时， 你可以使用一个对象。 -->
 
-**不好的：**
-```
+ 
+``` java
 void createMenu(String title,String body,String buttonText,boolean cancellable){}
 ```
+---
 
-**好的**：
-```
+## 补救方法：使用对象封装
+``` java
  class MenuConfig{
             String title;
             String body;
@@ -333,24 +336,26 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 ---
 
 
-# if/else/for嵌套
+# <!-- fit --> 3. if/else/for嵌套
+
+---
 
 - 缩进不统一，怕影响 blame 不敢改
 - 分支丢失，缺少 else
 
 ---
 
-### 封装条件语句
+## 坏味道：条件语句过长
 
-**不好的：**
-```
+ 
+``` java
     if(fsm.state.equals("fetching")&&listNode.isEmpty(){
             //...
         }
 ```
-
-**好的：**
-```
+---
+## 补救办法：封装条件语句
+```java
     void shouldShowSpinner(Fsm fsm, String listNode) {
             return fsm.state.equals("fetching")&&listNode.isEmpty();
         }
@@ -361,10 +366,9 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 ```
 ---
 
-### 避免负面条件
+## 坏味道：负面条件判断语句
 
-**不好的：**
-```
+``` java
     void isDOMNodeNotPresent(Node node) {
             // ...
         }
@@ -373,8 +377,9 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
             // ...
         }
 ```
+---
 
-**好的：**
+## 补救办法：使用正面判断条件
 ```
     void isDOMNodePresent(Node node) {
                 // ...
@@ -386,16 +391,15 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 ```
 ---
 
-### 避免条件语句
+## 坏味道：过长条件判断语句
 
-这看起来似乎是一个不可能的任务。 第一次听到这个时， 多数人会说： “没有 `if` 语句还能期望我干
+<!-- 这看起来似乎是一个不可能的任务。 第一次听到这个时， 多数人会说： “没有 `if` 语句还能期望我干
 啥呢”， 答案是多数情况下你可以使用多态来完成同样的任务。 第二个问题通常是 “好了， 那么做很棒，
 但是我为什么想要那样做呢”， 答案是我们学到的上一条代码整洁之道的理念： 一个函数应当只做一件事情。
 当你有使用 `if` 语句的类/函数是， 你在告诉你的用户你的函数做了不止一件事情。 记住： 只做一件
-事情。
-
-**不好的：**
-```
+事情。 -->
+ 
+```java
  class Airplane{
         int getCurisingAltitude(){
             switch(this.type){
@@ -409,8 +413,9 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
             }
         }
 ```
+---
 
-**好的：**
+## 补救办法：运用多态
 ```
     class Airplane {
             // ...
