@@ -204,6 +204,27 @@ void changeSettings(UserSettings settings) {
 
 ---
 
+## 预防方式
+
+### CheckStyle
+
+* Maximum File Length（最大文件长度）
+* Maximum Line Length（最大行长度）
+* Maximum Method Length（最大方法长度）
+* Strict Duplicate Code（严格重复代码）
+* Designed For Extension（设计扩展性）
+
+---
+
+## 重构手法
+
+* 提取方法
+* 移动变量
+* 移动方法
+* 安全移除
+
+---
+
 # <!-- fit --> 2. 命名问题
 
 ---
@@ -244,7 +265,7 @@ setTimeout(blastOff, 86400000);
 
 ---
 
-## 补救方法：使用可搜索的名称
+## 补救办法：使用可搜索的名称
 
 ``` java
 // 将它们声明为全局常量。
@@ -334,7 +355,7 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 
 ---
 
-## 补救方法：使用对象封装
+## 补救办法：使用对象封装
 
 ``` java
 class MenuConfig{
@@ -345,6 +366,25 @@ class MenuConfig{
 }
 void  createMenu(MenuConfig menuConfig){}
 ```
+
+---
+
+## 预防方式
+
+### CheckStyle
+
+* Member Names（成员名称）
+* Method Names（方法名称）
+* Maximum Parameters（最大参数数量）
+
+--- 
+
+## 重构手法
+
+* 重命名
+* 提取常量
+* 提取变量
+* 提取方法参数对象
 
 ---
 
@@ -611,6 +651,25 @@ class Cessna extends Airplane {
 
 ---
 
+## 预防方式
+
+### CheckStyle
+
+* Nested For Depth（for嵌套深度）
+* Nested If Depth（if嵌套深度）
+* Simplify Boolean Expression（简化布尔表达式）
+* Cyclomatic Complexity（循环复杂度）
+
+---
+
+## 重构手法
+
+* 提取变量
+* 提取方法
+* 移动代码块
+
+---
+
 # <!-- fit --> 4. 缺少文档
 
 ---
@@ -751,6 +810,15 @@ void action(){
 
 ---
 
+## 预防方式
+
+### CheckStyle
+
+* Style Javadoc（风格注释）
+* Trailing Comment（行尾注释）
+
+---
+
 # <!-- fit --> 5. 滥用设计模式
 
 ---
@@ -807,6 +875,19 @@ public class CommUtil {
     }
 }
 ```
+
+---
+
+## 预防方式
+
+### CheckStyle
+
+* Explicit Initialization（显式初始化）
+* Class Data Abstraction Coupling（类的数据抽象耦合）
+
+### leakcanary
+
+* debug notify
 
 ---
 
@@ -939,6 +1020,19 @@ Observable.just(SHARE_QR_CODE)
 
 ---
 
+## 预防方式
+
+### Lint
+
+* Android/Performace
+* Java/Memory
+
+### leakcanary
+
+* debug notify
+
+---
+
 # <!-- fit --> 7. 多线程问题
 
 ---
@@ -1036,4 +1130,15 @@ for (int i = 0; i < 10; i++) {
     });
 }
 ```
+
+---
+
+## 预防方式
+
+### Alibaba Coding Gudelines
+
+* Threads should be provided by thread pools
+* A thread pool should be created by ThreadPoolExecutor rather than Executors.
+
+---
 
