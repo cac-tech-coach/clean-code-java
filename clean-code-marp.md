@@ -1,92 +1,100 @@
 ---
 marp: true
-theme: gaia
+theme: default
+class: invert
 paginate: true
-backgroundImage: url('./assets/hero-background.jpg')
 ---
-<!--
-_class: lead
--->
+<!-- _class: lead -->
 
-![bg right:50% 80%](./assets/code-review.jpg)
 # <!-- fit -->**Clean Code**
 
 2020.3.12
 
 ---
 
-# 过长的方法 & 过大的类
+# <!-- fit --> 1. 过长方法 & 过大类
 
-- 代码冗余，不是最优实现
-- 不敢删除遗留代码，怕出问题
-- 复制粘贴造成的帝王类
-- 类职责太多
+---
+
+- **代码冗余**，不是最优实现
+- **不敢删除遗留代码**，怕出问题
+- **复制粘贴**造成的帝王类
+- 类职责太多(违反 SRP)
 - 业务逻辑放在了 UI 中
 
 ---
 
-## 方法应该只有一个抽象级别
+## 坏味道：方法应该抽象超过一层
 
-当在你的函数中有多于一个抽象级别时， 你的函数通常做了太多事情。 拆分函数将会提升重用性和测试性。
+<!-- 当在你的函数中有多于一个抽象级别时，你的函数通常做了太多事情。拆分函数将会提升重用性和测试性。 -->
 
-**不好的：**
-```
- void parseBetterJSAlternative(String code){
-        String[] REGECES={};
-        String[] statements=code.split(" ");
-        String[] tokens={};
-        for(String regex: Arrays.asList(REGECES)){
-               for(String statement:Arrays.asList(statements)){
-                   //...
-                }
-            }
-        String[] ast={};
-        for(String token:Arrays.asList(tokens)){
-                //lex ...
-            }
+```java
+void parseBetterJSAlternative(String code){
+    String[] REGECES={};
+    String[] statements=code.split(" ");
+    String[] tokens={};
+    for(String regex: Arrays.asList(REGECES)){
+        for(String statement:Arrays.asList(statements)){ //... }
+    }
 
-        for(String node:Arrays.asList(ast)){
-                //parse ...
-            }
-        }
+    String[] ast={};
+    for(String token:Arrays.asList(tokens)){ //lex ...}
+
+    for(String node:Arrays.asList(ast)){ //parse ...}
+}
 ```
 
-**好的：**
-```
- String[] tokenize(String code){
-        String[] REGECES={};
-        String[] statements=code.split(" ");
-        String[] tokens={};
-        for(String regex: Arrays.asList(REGECES)){
-            for(String statement:Arrays.asList(statements)){
-                    //tokens push
-                }
-            }
-        return tokens;
-        }
-
-        String[] lexer(String[] tokens){
-        String[] ast={};
-        for(String token:Arrays.asList(tokens)){
-                //ast push
-        }
-        return ast;
-        }
-
-        void parseBetterJSAlternative(String code){
-        String[] tokens=tokenize(code);
-        String[] ast=lexer(tokens);
-        for(String node:Arrays.asList(ast)){
-                //parse ...
-            }
-        }
-```
- 
 ---
 
-## 移除冗余代码
+## 补救办法：提取方法
 
-竭尽你的全力去避免冗余代码。 冗余代码是不好的， 因为它意味着当你需要修改一些逻辑时会有多个地方
+```java
+String[] tokenize(String code){
+    String[] REGECES={};
+    String[] statements=code.split(" ");
+    String[] tokens={};
+    for(String regex: Arrays.asList(REGECES)){
+        for(String statement:Arrays.asList(statements)){ //tokens push }
+    }
+    return tokens;
+}
+
+String[] lexer(String[] tokens){
+    String[] ast={};
+    for(String token:Arrays.asList(tokens)){ //ast push }
+    return ast;
+}
+
+void parseBetterJSAlternative(String code){
+    String[] tokens=tokenize(code);
+    String[] ast=lexer(tokens);
+    for(String node:Arrays.asList(ast)){ //parse ...}
+}
+```
+
+---
+
+## 坏味道：冗余代码
+
+```java
+    void showDeveloperList(List<Developer> developers){
+        for(Developer developer:developers){
+            render(new Data(developer.expectedSalary,developer.experience,developer.githubLink));
+        }
+    }
+
+    void showManagerrList(List<Manager> managers){
+        for(Manager manager:managers){
+            render(new Data(manager.expectedSalary,manager.experience,manager.portfolio));
+        }
+    }
+```
+
+---
+
+## 补救办法：移除冗余代码
+
+<!-- 竭尽你的全力去避免冗余代码。 冗余代码是不好的， 因为它意味着当你需要修改一些逻辑时会有多个地方
 需要修改。
 
 想象一下你在经营一家餐馆， 你需要记录所有的库存西红柿， 洋葱， 大蒜， 各种香料等等。 如果你有多
@@ -99,25 +107,9 @@ _class: lead
 
 让这个抽象正确是关键的， 这是为什么要你遵循 *Classes* 那一章的 SOLID 的原因。 不好的抽象比冗
 余代码更差， 所以要谨慎行事。 既然已经这么说了， 如果你能够做出一个好的抽象， 才去做。 不要重复
-你自己， 否则你会发现当你要修改一个东西时时刻需要修改多个地方。
+你自己， 否则你会发现当你要修改一个东西时时刻需要修改多个地方。 -->
 
-**不好的：**
-```
- void showDeveloperList(List<Developer> developers){
-            for(Developer developer:developers){
-                render(new Data(developer.expectedSalary,developer.experience,developer.githubLink));
-            }
-        }
-
- void showManagerrList(List<Manager> managers){
-            for(Manager manager:managers){
-                render(new Data(manager.expectedSalary,manager.experience,manager.portfolio));
-            }
-        }
-```
-
-**好的：**
-```
+```java
  void showList(List<Employee> employees){
             for(Employee employee:employees){
                 Data data=new Data(employee.expectedSalary,employee.experience,employee.githubLink);
@@ -130,15 +122,11 @@ _class: lead
             }
         }
 ```
+
 ---
 
-## 移除僵尸代码
-
-僵死代码和冗余代码同样糟糕。 没有理由在代码库中保存它。 如果它不会被调用， 就删掉它。 当你需要
-它时， 它依然保存在版本历史记录中。
-
-**不好的：**
-```
+## 坏味道：僵尸代码
+```java
     void  oldRequestModule(String url) {
         // ...
     }
@@ -152,7 +140,13 @@ _class: lead
 
 ```
 
-**好的：**
+---
+
+## 解救办法：移除僵尸代码
+
+<!-- 僵死代码和冗余代码同样糟糕。 没有理由在代码库中保存它。 如果它不会被调用， 就删掉它。 当你需要
+它时， 它依然保存在版本历史记录中。 -->
+
 ```
     void  newRequestModule(String url) {
         // ...
@@ -162,14 +156,14 @@ _class: lead
     inventoryTracker("apples", req, "www.inventory-awesome.io");
 ```
 ---
-## 单一职责原则 (SRP)
 
-正如代码整洁之道所述， “永远不要有超过一个理由来修改一个类”。 给一个类塞满许多功能， 就像你在航
+## 坏味道：违反原则单一职责原则 (SRP)
+
+<!-- 正如代码整洁之道所述， “永远不要有超过一个理由来修改一个类”。 给一个类塞满许多功能， 就像你在航
 班上只能带一个行李箱一样， 这样做的问题你的类不会有理想的内聚性， 将会有太多的理由来对它进行修改。
 最小化需要修改一个类的次数时很重要的， 因为如果一个类拥有太多的功能， 一旦你修改它的一小部分，
-将会很难弄清楚会对代码库中的其它模块造成什么影响。
+将会很难弄清楚会对代码库中的其它模块造成什么影响。 -->
 
-**不好的：**
 ```
  class UserSettings {
         User user;
@@ -186,7 +180,9 @@ _class: lead
     }
 ```
 
-**好的：**
+---
+
+## 补救办法：移动变量、移动方法...
 ```
     User user;
     UserAuth auth;
@@ -204,7 +200,10 @@ _class: lead
 
 ```
 ---
+
 # 命名问题
+
+---
 
 - Chinglish，英文水平参差不齐
 - 方法参数太多，命名随意，无法判断参数副作用
