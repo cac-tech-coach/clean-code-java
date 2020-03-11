@@ -17,11 +17,11 @@ paginate: true
 
 ---
 
-- **代码冗余**，不是最优实现
-- **不敢删除遗留代码**，怕出问题
-- **复制粘贴**造成的帝王类
-- 类职责太多(违反 SRP)
-- 业务逻辑放在了 UI 中
+* **代码冗余**，不是最优实现
+* **不敢删除遗留代码**，怕出问题
+* **复制粘贴**造成的帝王类
+* 类职责太多(违反 SRP)
+* 业务逻辑放在了 UI 中
 
 ---
 
@@ -29,7 +29,7 @@ paginate: true
 
 <!-- 当在你的函数中有多于一个抽象级别时，你的函数通常做了太多事情。拆分函数将会提升重用性和测试性。 -->
 
-```java
+``` java
 void parseBetterJSAlternative(String code){
     String[] REGECES={};
     String[] statements=code.split(" ");
@@ -49,7 +49,7 @@ void parseBetterJSAlternative(String code){
 
 ## 补救办法：提取方法
 
-```java
+``` java
 String[] tokenize(String code){
     String[] REGECES={};
     String[] statements=code.split(" ");
@@ -77,7 +77,7 @@ void parseBetterJSAlternative(String code){
 
 ## 坏味道：冗余代码
 
-```java
+``` java
 void showDeveloperList(List<Developer> developers){
     for(Developer developer:developers){
         render(new Data(developer.expectedSalary,developer.experience,developer.githubLink));
@@ -110,7 +110,7 @@ void showManagerrList(List<Manager> managers){
 余代码更差， 所以要谨慎行事。 既然已经这么说了， 如果你能够做出一个好的抽象， 才去做。 不要重复
 你自己， 否则你会发现当你要修改一个东西时时刻需要修改多个地方。 -->
 
-```java
+``` java
 void showList(List<Employee> employees){
     for(Employee employee:employees){
         Data data=new Data(employee.expectedSalary,employee.experience,employee.githubLink);
@@ -128,7 +128,7 @@ void showList(List<Employee> employees){
 
 ## 坏味道：僵尸代码
 
-```java
+``` java
 void  oldRequestModule(String url) {
     // ...
 }
@@ -148,7 +148,7 @@ inventoryTracker("apples", req, "www.inventory-awesome.io");
 <!-- 僵死代码和冗余代码同样糟糕。 没有理由在代码库中保存它。 如果它不会被调用， 就删掉它。 当你需要
 它时， 它依然保存在版本历史记录中。 -->
 
-```java
+``` java
 void  newRequestModule(String url) {
     // ...
 }
@@ -166,7 +166,7 @@ inventoryTracker("apples", req, "www.inventory-awesome.io");
 最小化需要修改一个类的次数时很重要的， 因为如果一个类拥有太多的功能， 一旦你修改它的一小部分，
 将会很难弄清楚会对代码库中的其它模块造成什么影响。 -->
 
-```java
+``` java
 class UserSettings {
     User user;
 
@@ -184,8 +184,9 @@ class UserSettings {
 
 ---
 
-## 补救办法：移动变量、移动方法...
-```java
+## 补救办法：移动变量、移动方法... 
+
+``` java
 User user;
 UserAuth auth;
 
@@ -207,17 +208,17 @@ void changeSettings(UserSettings settings) {
 
 ---
 
-- Chinglish，英文水平参差不齐
-- 方法参数太多，命名随意，无法判断参数副作用
-- 滥用单词缩写
-- 实现修改了，命名没有修改
-- 害怕散弹式修改，不敢重命名或者修改参数
+* Chinglish，英文水平参差不齐
+* 方法参数太多，命名随意，无法判断参数副作用
+* 滥用单词缩写
+* 实现修改了，命名没有修改
+* 害怕散弹式修改，不敢重命名或者修改参数
 
 ---
 
 ## 坏味道：命名无意义
 
-```java
+``` java
 String yyyymmdstr = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 ```
 
@@ -225,7 +226,7 @@ String yyyymmdstr = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 
 ## 补救办法：使用有意义并且可读的变量名称
 
-```java
+``` java
 String currentDate = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 ```
 
@@ -236,7 +237,7 @@ String currentDate = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 <!-- 我们要阅读的代码比要写的代码多得多， 所以我们写出的代码的可读性和可搜索性是很重要的。 使用没有
 意义的变量名将会导致我们的程序难于理解， 将会伤害我们的读者， 所以请使用可搜索的变量名。 -->
 
-```java
+``` java
 // 86400000 是什么鬼？
 setTimeout(blastOff, 86400000);
 ```
@@ -245,7 +246,7 @@ setTimeout(blastOff, 86400000);
 
 ## 补救方法：使用可搜索的名称
 
-```java
+``` java
 // 将它们声明为全局常量。
 public static final int MILLISECONDS_IN_A_DAY = 86400000;
 setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
@@ -255,7 +256,7 @@ setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
 
 ## 坏味道：变量使用条件语句
 
-```java
+``` java
 String address = "One Infinite Loop, Cupertino 95014";
 String cityZipCodeRegex = "/^[^,\\\\]+[,\\\\\\s]+(.+?)\\s*(\\d{5})?$/";
 
@@ -268,14 +269,15 @@ address.split(cityZipCodeRegex)[1]);
 ## 补救办法：使用解释性的变量
 
 ```java 
-String address = "One Infinite Loop, Cupertino 95014";
-String cityZipCodeRegex = "/^[^,\\\\]+[,\\\\\\s]+(.+?)\\s*(\\d{5})?$/";
+String address = "One Infinite Loop, Cupertino 95014"; 
+String cityZipCodeRegex = "/^[^, \\\\]+[, \\\\\\s]+(.+?)\\s*(\\d{5})?$/"; 
 
-String city = address.split(cityZipCodeRegex)[0];
-String zipCode = address.split(cityZipCodeRegex)[1];
+String city = address.split(cityZipCodeRegex)[0]; 
+String zipCode = address.split(cityZipCodeRegex)[1]; 
 
-saveCityZipCode(city, zipCode);
-```
+saveCityZipCode(city, zipCode); 
+
+``` 
 
 ---
 
@@ -300,7 +302,7 @@ for (int i = 0; i < l.length; i++) {
 
 ## 补救办法：使用显示的命名方式
 
-```java
+``` java
 String[] locations = {"Austin", "New York", "San Francisco"};
 
 for (String location : locations) {
@@ -326,7 +328,7 @@ for (String location : locations) {
 
 当你发现你自己需要大量的参数时， 你可以使用一个对象。 -->
 
-```java
+``` java
 void createMenu(String title,String body,String buttonText,boolean cancellable){}
 ```
 
@@ -334,7 +336,7 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 
 ## 补救方法：使用对象封装
 
-```java
+``` java
 class MenuConfig{
     String title;
     String body;
@@ -346,18 +348,18 @@ void  createMenu(MenuConfig menuConfig){}
 
 ---
 
-# <!-- fit --> 3. if/else/for嵌套
+# <!-- fit --> 3.if/else/for嵌套
 
 ---
 
-- 缩进不统一，怕影响 blame 不敢改
-- 分支丢失，缺少 else
+* 缩进不统一，怕影响 blame 不敢改
+* 分支丢失，缺少 else
 
 ---
 
 ## 坏味道：条件语句过长
 
-```java
+``` java
 if(fsm.state.equals("fetching")&&listNode.isEmpty(){
     //...
 }
@@ -367,7 +369,7 @@ if(fsm.state.equals("fetching")&&listNode.isEmpty(){
 
 ## 补救办法：封装条件语句
 
-```java
+``` java
 void shouldShowSpinner(Fsm fsm, String listNode) {
     return fsm.state.equals("fetching")&&listNode.isEmpty();
 }
@@ -381,7 +383,7 @@ if (shouldShowSpinner(fsmInstance, listNodeInstance)) {
 
 ## 坏味道：负面条件判断语句
 
-```java
+``` java
 void isDOMNodeNotPresent(Node node) {
     // ...
 }
@@ -395,7 +397,7 @@ if (!isDOMNodeNotPresent(node)) {
 
 ## 补救办法：使用正面判断条件
 
-```java
+``` java
 void isDOMNodePresent(Node node) {
     // ...
 }
@@ -403,6 +405,152 @@ void isDOMNodePresent(Node node) {
 if (isDOMNodePresent(node)) {
     // ...
 }
+```
+
+---
+
+## 坏味道：相同结果的条件过渡拆分
+
+``` java
+
+double disablityAmount(){
+    if(_seniority < 2) 
+        return 0;
+ 
+    if(_monthsDisabled > 12)
+        return 0;
+ 
+    if(_isPartTime)
+        return 0;
+ 
+    //do somethig
+
+    }
+```
+
+---
+
+## 补救办法：合并条件表达式
+
+``` java
+double disablityAmount(){
+    if(_seniority < 2 || _monthsDisabled > 12 ||_isPartTime) 
+        return 0;
+    //do somethig
+    }
+
+```
+
+---
+
+## 坏味道：if-else嵌套没有关联性
+
+``` java
+double getPayAmount(){
+    double result;
+    if(_isDead) {
+        result = deadAmount();
+    }else{
+        if(_isSeparated){
+            result = separatedAmount();
+        }
+        else{
+            if(_isRetired){
+                result = retiredAmount();
+            else{
+                result = normalPayAmount();
+            }
+        }
+    }
+    return result;
+```
+
+---
+
+## 补救办法：将包含关系改为平行关系
+
+``` java
+
+double getPayAmount(){
+    if(_isDead) 
+        return deadAmount();
+ 
+    if(_isSeparated)
+        return separatedAmount();
+ 
+    if(_isRetired)
+        return retiredAmount();
+ 
+    return normalPayAmount();
+}
+```
+
+---
+
+## 坏味道： "箭头型"代码
+
+``` java
+/* 查找年龄大于18岁且为男性的学生列表 */
+public ArrayList<Student> getStudents(int uid){
+        ArrayList<Student> result = new ArrayList<Student>();
+        Student stu = getStudentByUid(uid);
+        if (stu != null) {
+            Teacher teacher = stu.getTeacher();
+            if(teacher != null){
+                ArrayList<Student> students = teacher.getStudents();
+                if(students != null){
+                    for(Student student : students){
+                        if(student.getAge() > = 18 && student.getGender() == MALE){
+                            result.add(student);
+                        }
+                    }
+                }else {
+                    logger.error("获取学生列表失败");
+                }
+            }else {
+                logger.error("获取老师信息失败");
+            }
+        } else {
+            logger.error("获取学生信息失败");
+        }
+        return result;
+    }
+```
+
+---
+
+## 补救办法：异常条件先退出，保持主干流程是核心流程
+
+``` java
+/* 查找年龄大于18岁且为男性的学生列表 */
+public ArrayList<Student> getStudents(int uid){
+        ArrayList<Student> result = new ArrayList<Student>();
+        Student stu = getStudentByUid(uid);
+        if (stu == null) {
+            logger.error("获取学生信息失败");
+            return result;
+        }
+ 
+        Teacher teacher = stu.getTeacher();
+        if(teacher == null){
+            logger.error("获取老师信息失败");
+            return result;
+        }
+ 
+        ArrayList<Student> students = teacher.getStudents();
+        if(students == null){
+            logger.error("获取学生列表失败");
+            return result;
+        }
+ 
+        for(Student student : students){
+            if(student.getAge() > 18 && student.getGender() == MALE){
+                result.add(student);
+            }
+        }
+        return result;
+    }
+
 ```
 
 ---
@@ -415,7 +563,7 @@ if (isDOMNodePresent(node)) {
 当你有使用 `if` 语句的类/函数是， 你在告诉你的用户你的函数做了不止一件事情。 记住： 只做一件
 事情。 -->
 
-```java
+``` java
 class Airplane{
     int getCurisingAltitude(){
         switch(this.type){
@@ -434,7 +582,7 @@ class Airplane{
 
 ## 补救办法：运用多态
 
-```java
+``` java
 class Airplane {
     // ...
 }
@@ -467,10 +615,10 @@ class Cessna extends Airplane {
 
 ---
 
-- 重要的方法没有注释，如关键算法、BUG 修改
-- 无意义的注释太多
-- 重要的接口缺少文档
-- 接口文档没有集中管理，搜索如大海捞针
+* 重要的方法没有注释，如关键算法、BUG 修改
+* 无意义的注释太多
+* 重要的接口缺少文档
+* 接口文档没有集中管理，搜索如大海捞针
 
 ---
 
@@ -478,7 +626,7 @@ class Cessna extends Airplane {
 
 <!-- 注释是代码的辩解， 不是要求。 多数情况下， 好的代码就是文档。 -->
 
-```java
+``` java
 void hashIt(String data) {
     // The hash
     long hash = 0;
@@ -502,7 +650,7 @@ void hashIt(String data) {
 
 ## 补救办法：仅仅对包含复杂业务逻辑的东西进行注释
 
-```java
+``` java
 void hashIt(String data) {
     long hash = 0;
     int length = data.length();
@@ -524,11 +672,13 @@ void hashIt(String data) {
 <!-- 因为有版本控制， 把旧的代码留在历史记录即可。 -->
 
 ``` java 
+
     doStuff();
     // doOtherStuff();
     // doSomeMoreStuff();
     // doSoMuchStuff();
-```
+
+``` 
 
 ---
 
@@ -545,7 +695,7 @@ void hashIt(String data) {
 <!-- 记住， 使用版本控制！ 不需要僵尸代码， 注释掉的代码， 尤其是日志式的注释。 使用 `git log` 来
 获取历史记录。 -->
 
-```java
+``` java
 /**
  * 2016-12-20: Removed monads, didn't understand them (RM)
  * 2016-10-01: Improved using special monads (JP)
@@ -557,11 +707,12 @@ void combine(String a, String b) {
     return a + b;
 }
 ```
+
 ---
 
 ## 补救办法：移除，使用 `git log` 来获取历史记录
 
-```java
+``` java
 void combine(String a, String b) {
     return a + b;
 }
@@ -573,7 +724,7 @@ void combine(String a, String b) {
 
 <!-- 它们仅仅添加了干扰，让函数和变量名称与合适的缩进和格式化为你的代码提供视觉结构。 -->
 
-```java
+``` java
 ////////////////////////////////////////////////////////////////////////////////
 // Scope Model Instantiation
 ////////////////////////////////////////////////////////////////////////////////
@@ -591,7 +742,7 @@ void action(){
 
 ## 补救办法：移除，使用缩进和格式化
 
-```java
+``` java
 String[] model = {"foo","bar"};
 void action(){
     //...
@@ -604,16 +755,18 @@ void action(){
 
 ---
 
-- 单例模式初始化顺序引起 NPE
-- 单例带来的内存问题，尤其使用 list 或者 map
+* 单例模式初始化顺序引起 NPE
+* 单例带来的内存问题，尤其使用 list 或者 map
 
 --- 
+
 ## 坏味道：单例造成的内存泄漏
 
 <!-- 当调用getInstance时，如果传入的context是Activity的context。只要这个单例没有被释放，那么这个
+
 	Activity也不会被释放一直到进程退出才会释放。 -->
 
-```java
+``` java
 public class CommUtil {
     private static CommUtil instance;
     private Context context;
@@ -637,7 +790,7 @@ public class CommUtil {
 
 <!-- 能使用Application的Context就不要使用Activity的Content，Application的生命周期伴随着整个进程的周期 -->
 
-```java
+``` java
 public class CommUtil {
     private static CommUtil instance;
     private Context context;
@@ -661,8 +814,8 @@ public class CommUtil {
 
 ---
 
-- 随意使用匿名内部类
-- 回调地狱，可读性极差
+* 随意使用匿名内部类
+* 回调地狱，可读性极差
 
 ---
 
@@ -671,7 +824,7 @@ public class CommUtil {
 <!-- 
 异步任务和Runnable都是一个匿名内部类，因此它们对当前Activity都有一个隐式引用。如果Activity在销毁之前，任务还未完成， 那么将导致Activity的内存资源无法回收，造成内存泄漏 -->
 
-```java
+``` java
 new AsyncTask<Void, Void, Void>() {
     @Override
     protected Void doInBackground(Void... params) {
@@ -695,7 +848,7 @@ new Thread(new Runnable() {
 <!-- 
 使用静态内部类，避免了Activity的内存资源泄漏，当然在Activity销毁时候也应该取消相应的任务AsyncTask::cancel()，避免任务在后台执行浪费资源 -->
 
-```java
+``` java
 static class MyAsyncTask extends AsyncTask<Void, Void, Void> {
     private WeakReference<Context> weakReference;
 
@@ -734,7 +887,7 @@ new MyAsyncTask(this).execute();
 
 ## 坏味道：回调嵌套
 
-```java
+``` java
 //画一个二维码 (需要在子线程里完成)然后在imageview上显示
 new Thread(new Runnable() {
     @Override
@@ -758,7 +911,7 @@ new Thread(new Runnable() {
 
 ## 补救办法1：使用链式调用
 
-```java
+``` java
 Observable.just(SHARE_QR_CODE)
         .map(new Function<String, Bitmap>() {
             @Override
@@ -778,7 +931,7 @@ Observable.just(SHARE_QR_CODE)
 
 ## 补救办法2：使用lambda
 
-```java
+``` java
 Observable.just(SHARE_QR_CODE)
                 .map(s -> CodeCreator.createQRCode(ShareActivity.this, s))
                 .subscribe(bitmap -> img_qr_code.setImageBitmap(bitmap));
@@ -790,18 +943,62 @@ Observable.just(SHARE_QR_CODE)
 
 ---
 
-- 只会使用 synchronized 解决同步问题
-- 随意 new Thread 或者 new AsyncTask
+* 只会使用 synchronized 解决同步问题
+* 随意 new Thread 或者 new AsyncTask
+
+---
+
+## 坏味道：过渡使用synchronized
+
+``` java
+public class Counter{
+    private int value;
+    public synchronized int getValue(){
+        return value;
+    }
+    public int getNextValue(){
+        return value++;
+    }
+
+    public int getPreviousValue(){
+        return value--;
+    }
+}
+```
+
+---
+
+## 改进办法：使用非锁定算法
+
+``` java
+public class AtomicCounter{
+    private final AtomicInteger value=new AtomicInteger(0);
+
+    public int getValue(){
+        return value.get();
+    }
+
+    public int getNextValue(){
+        return value.incrementAndGet();
+    }
+
+    public int getPreviousValue(){
+        return value.decrementAndGet();
+    }
+
+}
+```
 
 ---
 
 ## 坏味道：直接在代码使用 new Thread
 
 <!-- - 每次new Thread新建对象性能差
-- 线程缺乏统一管理，可能无限制新建线程，相互之间竞争，及可能占用过多系统资源导致死机或oom。
-- 缺乏更多功能，如定时执行、定期执行、线程中断 -->
 
-```java
+* 线程缺乏统一管理，可能无限制新建线程，相互之间竞争，及可能占用过多系统资源导致死机或oom。
+* 缺乏更多功能，如定时执行、定期执行、线程中断 -->
+
+``` java
 new Thread(new Runnable() {
 
     @Override
@@ -816,10 +1013,11 @@ new Thread(new Runnable() {
 ## 补救办法：使用线程池管理
 
 <!-- - 重用存在的线程，减少对象创建、消亡的开销，性能佳。
-- 可有效控制最大并发线程数，提高系统资源的使用率，同时避免过多资源竞争，避免堵塞。
-- 提供定时执行、定期执行、单线程、并发数控制等功能 -->
 
-```java
+* 可有效控制最大并发线程数，提高系统资源的使用率，同时避免过多资源竞争，避免堵塞。
+* 提供定时执行、定期执行、单线程、并发数控制等功能 -->
+
+``` java
 ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 for (int i = 0; i < 10; i++) {
     final int index = i;
@@ -838,3 +1036,4 @@ for (int i = 0; i < 10; i++) {
     });
 }
 ```
+
