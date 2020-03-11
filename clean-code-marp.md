@@ -439,7 +439,10 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 ```
 ---
 
-# 缺少文档
+# <!-- fit --> 4. 缺少文档
+
+---
+
 
 - 重要的方法没有注释，如关键算法、BUG 修改
 - 无意义的注释太多
@@ -448,12 +451,11 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 
 ---
 
-## 仅仅对包含复杂业务逻辑的东西进行注释
+## 坏味道：无意义的注释太多
 
-注释是代码的辩解， 不是要求。 多数情况下， 好的代码就是文档。
+<!-- 注释是代码的辩解， 不是要求。 多数情况下， 好的代码就是文档。 -->
 
-**不好的：**
-```
+```java
 void hashIt(String data) {
         // The hash
         long hash = 0;
@@ -472,9 +474,11 @@ void hashIt(String data) {
         }
     }
 ```
+---
 
-**好的：**
-```
+## 补救办法：仅仅对包含复杂业务逻辑的东西进行注释
+
+```java
  void hashIt(String data) {
         long hash = 0;
         int length = data.length();
@@ -492,31 +496,30 @@ void hashIt(String data) {
 ```
 ---
 
-## 不要在代码库中保存注释掉的代码
+## 坏味道：不要在代码库中保存注释掉的代码
 
-因为有版本控制， 把旧的代码留在历史记录即可。
+<!-- 因为有版本控制， 把旧的代码留在历史记录即可。 -->
 
-**不好的：**
-```
+``` java 
     doStuff();
     // doOtherStuff();
     // doSomeMoreStuff();
     // doSoMuchStuff();
 ```
+---
 
-**好的：**
-```
+## 补救办法：移除，把旧的代码留在版本控制里面
+```java
     doStuff();
 ```
 ---
 
-## 不要有日志式的注释
+## 坏味道：不要有日志式的注释
 
-记住， 使用版本控制！ 不需要僵尸代码， 注释掉的代码， 尤其是日志式的注释。 使用 `git log` 来
-获取历史记录。
+<!-- 记住， 使用版本控制！ 不需要僵尸代码， 注释掉的代码， 尤其是日志式的注释。 使用 `git log` 来
+获取历史记录。 -->
 
-**不好的：**
-```
+``` java
     /**
      * 2016-12-20: Removed monads, didn't understand them (RM)
      * 2016-10-01: Improved using special monads (JP)
@@ -528,21 +531,21 @@ void hashIt(String data) {
         return a + b;
     }
 ```
+---
 
-**好的：**
-```
+## 补救办法：移除，使用 `git log` 来获取历史记录
+``` java
     void combine(String a, String b) {
             return a + b;
     }
 ```
 ---
 
-## 避免占位符
+## 坏味道：使用占位符
 
-它们仅仅添加了干扰，让函数和变量名称与合适的缩进和格式化为你的代码提供视觉结构。
+<!-- 它们仅仅添加了干扰，让函数和变量名称与合适的缩进和格式化为你的代码提供视觉结构。 -->
 
-**不好的：**
-```
+```java
     ////////////////////////////////////////////////////////////////////////////////
     // Scope Model Instantiation
     ////////////////////////////////////////////////////////////////////////////////
@@ -556,28 +559,31 @@ void hashIt(String data) {
     }
 
 ```
-
-**好的：**
+---
+## 补救办法：移除，使用缩进和格式化
 ```
   String[] model = {"foo","bar"};
         void action(){
             //...
         }
 ```
+---
 
-# 滥用设计模式
+# <!-- fit --> 5. 滥用设计模式
+
+---
+ 
 
 - 单例模式初始化顺序引起 NPE
 - 单例带来的内存问题，尤其使用 list 或者 map
 
-## 单例造成的内存泄漏
+--- 
+## 坏味道：单例造成的内存泄漏
 
-当调用getInstance时，如果传入的context是Activity的context。只要这个单例没有被释放，那么这个
-	Activity也不会被释放一直到进程退出才会释放。
+<!-- 当调用getInstance时，如果传入的context是Activity的context。只要这个单例没有被释放，那么这个
+	Activity也不会被释放一直到进程退出才会释放。 -->
 
-**不好的：**
-
-```
+```java
 	public class CommUtil {
 	    private static CommUtil instance;
 	    private Context context;
@@ -592,11 +598,12 @@ void hashIt(String data) {
 		return instance;
 	    }
 ```
-**好的：**
 
-能使用Application的Context就不要使用Activity的Content，Application的生命周期伴随着整个进程的周期
+## 补救办法：使用长生命周期的引用或及时释放引用
 
-```
+<!-- 能使用Application的Context就不要使用Activity的Content，Application的生命周期伴随着整个进程的周期 -->
+
+```java
 	public class CommUtil {
 	    private static CommUtil instance;
 	    private Context context;
@@ -614,18 +621,19 @@ void hashIt(String data) {
 
 ---
 
-# 匿名内部类 & 回调地狱
-
+# <!-- fit --> 6. 匿名内部类 & 回调地狱
+ 
+---
 - 随意使用匿名内部类
 - 回调地狱，可读性极差
+---
 
-## 匿名内部类
+## 坏味道：匿名内部类导致内存泄漏
+ 
+<!-- 
+异步任务和Runnable都是一个匿名内部类，因此它们对当前Activity都有一个隐式引用。如果Activity在销毁之前，任务还未完成， 那么将导致Activity的内存资源无法回收，造成内存泄漏 -->
 
-**不好的：**
-
-异步任务和Runnable都是一个匿名内部类，因此它们对当前Activity都有一个隐式引用。如果Activity在销毁之前，任务还未完成， 那么将导致Activity的内存资源无法回收，造成内存泄漏
-
-```
+```java
  
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -643,12 +651,14 @@ void hashIt(String data) {
             }
         }).start();
 ```
+---
 
-**好的：**
+## 补救办法：使用静态内部类
+ 
+<!-- 
+使用静态内部类，避免了Activity的内存资源泄漏，当然在Activity销毁时候也应该取消相应的任务AsyncTask::cancel()，避免任务在后台执行浪费资源 -->
 
-使用静态内部类，避免了Activity的内存资源泄漏，当然在Activity销毁时候也应该取消相应的任务AsyncTask::cancel()，避免任务在后台执行浪费资源
-
-```
+```java
    static class MyAsyncTask extends AsyncTask<Void, Void, Void> {
         private WeakReference<Context> weakReference;
  
@@ -684,13 +694,11 @@ void hashIt(String data) {
 
 ---
 
-## 回调嵌套
+## 坏味道：回调嵌套
 
-画一个二维码 (需要在子线程里完成)然后在imageview上显示
 
-**不好的：**
-
-```
+```java
+//画一个二维码 (需要在子线程里完成)然后在imageview上显示
 new Thread(new Runnable() {
     @Override
     public void run() {
@@ -708,9 +716,9 @@ new Thread(new Runnable() {
     }
 }).start();
 ```
-
-**优化版：**
-```
+---
+##  补救办法：使用链式调用
+```java
  Observable.just(SHARE_QR_CODE)
                .map(new Function<String, Bitmap>() {
                    @Override
@@ -724,47 +732,52 @@ new Thread(new Runnable() {
            }
        });
 ```
-**好的：**
+---
+##  补救办法：使用lambda
 ```
 Observable.just(SHARE_QR_CODE)
                 .map(s -> CodeCreator.createQRCode(ShareActivity.this, s))
                 .subscribe(bitmap -> img_qr_code.setImageBitmap(bitmap));
 ```
+---
 
-# 多线程问题
+# <!-- fit --> 7. 多线程问题
+
+---
 
 - 只会使用 synchronized 解决同步问题
 - 随意 new Thread 或者 new AsyncTask
 
-## new Thread影响
+---
 
-- 每次new Thread新建对象性能差
+## 坏味道：直接在代码使用 new Thread
+ 
+<!-- - 每次new Thread新建对象性能差
 - 线程缺乏统一管理，可能无限制新建线程，相互之间竞争，及可能占用过多系统资源导致死机或oom。
-- 缺乏更多功能，如定时执行、定期执行、线程中断
+- 缺乏更多功能，如定时执行、定期执行、线程中断 -->
 
-**不好的：**
 
-```
+``` java
 
 new Thread(new Runnable() {
  
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+	    // TODO Auto-generated method stub
 	}
 }).start();
 
 ```
+--- 
 
-**好的：**
+## 补救办法：使用线程池管理
 
-使用线程池进行管理
-
-- 重用存在的线程，减少对象创建、消亡的开销，性能佳。
+ 
+<!-- - 重用存在的线程，减少对象创建、消亡的开销，性能佳。
 - 可有效控制最大并发线程数，提高系统资源的使用率，同时避免过多资源竞争，避免堵塞。
-- 提供定时执行、定期执行、单线程、并发数控制等功能
+- 提供定时执行、定期执行、单线程、并发数控制等功能 -->
 
-```
+``` java
 
 ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 for (int i = 0; i < 10; i++) {
@@ -784,4 +797,5 @@ for (int i = 0; i < 10; i++) {
 	});
 }
 ```
+---
 
