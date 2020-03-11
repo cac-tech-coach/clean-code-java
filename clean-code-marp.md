@@ -4,6 +4,7 @@ theme: default
 class: invert
 paginate: true
 ---
+
 <!-- _class: lead -->
 
 # <!-- fit -->**Clean Code**
@@ -77,17 +78,17 @@ void parseBetterJSAlternative(String code){
 ## 坏味道：冗余代码
 
 ```java
-    void showDeveloperList(List<Developer> developers){
-        for(Developer developer:developers){
-            render(new Data(developer.expectedSalary,developer.experience,developer.githubLink));
-        }
+void showDeveloperList(List<Developer> developers){
+    for(Developer developer:developers){
+        render(new Data(developer.expectedSalary,developer.experience,developer.githubLink));
     }
+}
 
-    void showManagerrList(List<Manager> managers){
-        for(Manager manager:managers){
-            render(new Data(manager.expectedSalary,manager.experience,manager.portfolio));
-        }
+void showManagerrList(List<Manager> managers){
+    for(Manager manager:managers){
+        render(new Data(manager.expectedSalary,manager.experience,manager.portfolio));
     }
+}
 ```
 
 ---
@@ -110,34 +111,34 @@ void parseBetterJSAlternative(String code){
 你自己， 否则你会发现当你要修改一个东西时时刻需要修改多个地方。 -->
 
 ```java
- void showList(List<Employee> employees){
-            for(Employee employee:employees){
-                Data data=new Data(employee.expectedSalary,employee.experience,employee.githubLink);
-                String portfolio=employee.portfolio;
-                if("manager".equals(employee)){
-                    portfolio=employee.portfolio;
-                }
-                data.portfolio=portfolio;
-                render(data);
-            }
+void showList(List<Employee> employees){
+    for(Employee employee:employees){
+        Data data=new Data(employee.expectedSalary,employee.experience,employee.githubLink);
+        String portfolio=employee.portfolio;
+        if("manager".equals(employee)){
+            portfolio=employee.portfolio;
         }
+        data.portfolio=portfolio;
+        render(data);
+    }
+}
 ```
 
 ---
 
 ## 坏味道：僵尸代码
+
 ```java
-    void  oldRequestModule(String url) {
-        // ...
-    }
+void  oldRequestModule(String url) {
+    // ...
+}
 
-    void  newRequestModule(String url) {
-        // ...
-    }
+void  newRequestModule(String url) {
+    // ...
+}
 
-    String  req = newRequestModule;
-    inventoryTracker("apples", req, "www.inventory-awesome.io");
-
+String  req = newRequestModule;
+inventoryTracker("apples", req, "www.inventory-awesome.io");
 ```
 
 ---
@@ -147,14 +148,15 @@ void parseBetterJSAlternative(String code){
 <!-- 僵死代码和冗余代码同样糟糕。 没有理由在代码库中保存它。 如果它不会被调用， 就删掉它。 当你需要
 它时， 它依然保存在版本历史记录中。 -->
 
-```
-    void  newRequestModule(String url) {
-        // ...
-    }
+```java
+void  newRequestModule(String url) {
+    // ...
+}
 
-    String  req = newRequestModule;
-    inventoryTracker("apples", req, "www.inventory-awesome.io");
+String  req = newRequestModule;
+inventoryTracker("apples", req, "www.inventory-awesome.io");
 ```
+
 ---
 
 ## 坏味道：违反原则单一职责原则 (SRP)
@@ -164,41 +166,41 @@ void parseBetterJSAlternative(String code){
 最小化需要修改一个类的次数时很重要的， 因为如果一个类拥有太多的功能， 一旦你修改它的一小部分，
 将会很难弄清楚会对代码库中的其它模块造成什么影响。 -->
 
-```
- class UserSettings {
-        User user;
+```java
+class UserSettings {
+    User user;
 
-        void changeSettings(UserSettings settings) {
-            if (this.verifyCredentials()) {
-                // ...
-            }
-        }
-
-        void verifyCredentials() {
+    void changeSettings(UserSettings settings) {
+        if (this.verifyCredentials()) {
             // ...
         }
     }
+
+    void verifyCredentials() {
+        // ...
+    }
+}
 ```
 
 ---
 
 ## 补救办法：移动变量、移动方法...
-```
-    User user;
-    UserAuth auth;
+```java
+User user;
+UserAuth auth;
 
-    public UserSettings(User user) {
-        this.user = user;
-        this.auth = new UserAuth(user);
+public UserSettings(User user) {
+    this.user = user;
+    this.auth = new UserAuth(user);
+}
+
+void changeSettings(UserSettings settings) {
+    if (this.auth.verifyCredentials()) {
+        // ...
     }
-
-    void changeSettings(UserSettings settings) {
-        if (this.auth.verifyCredentials()) {
-            // ...
-        }
-    }
-
+}
 ```
+
 ---
 
 # <!-- fit --> 2. 命名问题
@@ -215,17 +217,18 @@ void parseBetterJSAlternative(String code){
 
 ## 坏味道：命名无意义
 
- 
 ```java
- String yyyymmdstr = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
+String yyyymmdstr = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 ```
+
 ---
 
 ## 补救办法：使用有意义并且可读的变量名称
- 
+
+```java
+String currentDate = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 ```
- String currentDate = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
-```
+
 ---
 
 ## 坏味道：魔法值
@@ -233,77 +236,83 @@ void parseBetterJSAlternative(String code){
 <!-- 我们要阅读的代码比要写的代码多得多， 所以我们写出的代码的可读性和可搜索性是很重要的。 使用没有
 意义的变量名将会导致我们的程序难于理解， 将会伤害我们的读者， 所以请使用可搜索的变量名。 -->
 
-``` java
-// 艹， 86400000 是什么鬼？
- setTimeout(blastOff, 86400000);
-
+```java
+// 86400000 是什么鬼？
+setTimeout(blastOff, 86400000);
 ```
+
 ---
 
 ## 补救方法：使用可搜索的名称
 
-``` java
+```java
 // 将它们声明为全局常量。
- public static final int MILLISECONDS_IN_A_DAY = 86400000;
- setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
-
+public static final int MILLISECONDS_IN_A_DAY = 86400000;
+setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
 ```
+
 ---
 
 ## 坏味道：变量使用条件语句
- 
-```java
- String address = "One Infinite Loop, Cupertino 95014";
- String cityZipCodeRegex = "/^[^,\\\\]+[,\\\\\\s]+(.+?)\\s*(\\d{5})?$/";
 
- saveCityZipCode(address.split(cityZipCodeRegex)[0],
- address.split(cityZipCodeRegex)[1]);
+```java
+String address = "One Infinite Loop, Cupertino 95014";
+String cityZipCodeRegex = "/^[^,\\\\]+[,\\\\\\s]+(.+?)\\s*(\\d{5})?$/";
+
+saveCityZipCode(address.split(cityZipCodeRegex)[0],
+address.split(cityZipCodeRegex)[1]);
 ```
+
 --- 
 
 ## 补救办法：使用解释性的变量
+
 ```java 
-  String address = "One Infinite Loop, Cupertino 95014";
-  String cityZipCodeRegex = "/^[^,\\\\]+[,\\\\\\s]+(.+?)\\s*(\\d{5})?$/";
+String address = "One Infinite Loop, Cupertino 95014";
+String cityZipCodeRegex = "/^[^,\\\\]+[,\\\\\\s]+(.+?)\\s*(\\d{5})?$/";
 
-  String city = address.split(cityZipCodeRegex)[0];
-  String zipCode = address.split(cityZipCodeRegex)[1];
+String city = address.split(cityZipCodeRegex)[0];
+String zipCode = address.split(cityZipCodeRegex)[1];
 
-  saveCityZipCode(city, zipCode);
+saveCityZipCode(city, zipCode);
 ```
+
 ---
 
 ## 坏味道：使用隐式的缩写
 
 ```java
- String [] l = {"Austin", "New York", "San Francisco"};
+String [] l = {"Austin", "New York", "San Francisco"};
 
-        for (int i = 0; i < l.length; i++) {
-            String li = l[i];
-            doStuff();
-            doSomeOtherStuff();
-            // ...
-            // ...
-            // ...
-            // Wait, what is `$li` for again?
-            dispatch(li);
-        }
+for (int i = 0; i < l.length; i++) {
+    String li = l[i];
+    doStuff();
+    doSomeOtherStuff();
+    // ...
+    // ...
+    // ...
+    // Wait, what is `$li` for again?
+    dispatch(li);
+}
 ```
+
 ---
+
 ## 补救办法：使用显示的命名方式
 
 ```java
- String[] locations = {"Austin", "New York", "San Francisco"};
+String[] locations = {"Austin", "New York", "San Francisco"};
 
-        for (String location : locations) {
-            doStuff();
-            doSomeOtherStuff();
-            // ...
-            // ...
-            // ...
-            dispatch(location);
-        }
+for (String location : locations) {
+    doStuff();
+    doSomeOtherStuff();
+    // ...
+    // ...
+    // ...
+    dispatch(location);
+}
 ```
+
 ---
 
 ## 坏味道： 方法参数过长（超过2个）
@@ -317,24 +326,25 @@ void parseBetterJSAlternative(String code){
 
 当你发现你自己需要大量的参数时， 你可以使用一个对象。 -->
 
- 
-``` java
+```java
 void createMenu(String title,String body,String buttonText,boolean cancellable){}
 ```
+
 ---
 
 ## 补救方法：使用对象封装
-``` java
- class MenuConfig{
-            String title;
-            String body;
-            String buttonText;
-            boolean cancellable;
-        }
-        void  createMenu(MenuConfig menuConfig){}
-```
----
 
+```java
+class MenuConfig{
+    String title;
+    String body;
+    String buttonText;
+    boolean cancellable;
+}
+void  createMenu(MenuConfig menuConfig){}
+```
+
+---
 
 # <!-- fit --> 3. if/else/for嵌套
 
@@ -347,48 +357,54 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 
 ## 坏味道：条件语句过长
 
- 
-``` java
-    if(fsm.state.equals("fetching")&&listNode.isEmpty(){
-            //...
-        }
-```
----
-## 补救办法：封装条件语句
 ```java
-    void shouldShowSpinner(Fsm fsm, String listNode) {
-            return fsm.state.equals("fetching")&&listNode.isEmpty();
-        }
-
-    if (shouldShowSpinner(fsmInstance, listNodeInstance)) {
-            // ...
-        }
+if(fsm.state.equals("fetching")&&listNode.isEmpty(){
+    //...
+}
 ```
+
+---
+
+## 补救办法：封装条件语句
+
+```java
+void shouldShowSpinner(Fsm fsm, String listNode) {
+    return fsm.state.equals("fetching")&&listNode.isEmpty();
+}
+
+if (shouldShowSpinner(fsmInstance, listNodeInstance)) {
+    // ...
+}
+```
+
 ---
 
 ## 坏味道：负面条件判断语句
 
-``` java
-    void isDOMNodeNotPresent(Node node) {
-            // ...
-        }
+```java
+void isDOMNodeNotPresent(Node node) {
+    // ...
+}
 
-    if (!isDOMNodeNotPresent(node)) {
-            // ...
-        }
+if (!isDOMNodeNotPresent(node)) {
+    // ...
+}
 ```
+
 ---
 
 ## 补救办法：使用正面判断条件
-```
-    void isDOMNodePresent(Node node) {
-                // ...
-        }
 
-    if (isDOMNodePresent(node)) {
-            // ...
-        }
+```java
+void isDOMNodePresent(Node node) {
+    // ...
+}
+
+if (isDOMNodePresent(node)) {
+    // ...
+}
 ```
+
 ---
 
 ## 坏味道：过长条件判断语句
@@ -398,56 +414,58 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 但是我为什么想要那样做呢”， 答案是我们学到的上一条代码整洁之道的理念： 一个函数应当只做一件事情。
 当你有使用 `if` 语句的类/函数是， 你在告诉你的用户你的函数做了不止一件事情。 记住： 只做一件
 事情。 -->
- 
+
 ```java
- class Airplane{
-        int getCurisingAltitude(){
-            switch(this.type){
-                case "777":
-                    return this.getMaxAltitude()-this.getPassengerCount();
-                case "Air Force One":
-                    return this.getMaxAltitude();
-                case "Cessna":
-                    return this.getMaxAltitude() - this.getFuelExpenditure();
-                }
-            }
+class Airplane{
+    int getCurisingAltitude(){
+        switch(this.type){
+            case "777":
+                return this.getMaxAltitude()-this.getPassengerCount();
+            case "Air Force One":
+                return this.getMaxAltitude();
+            case "Cessna":
+                return this.getMaxAltitude() - this.getFuelExpenditure();
         }
+    }
+}
 ```
+
 ---
 
 ## 补救办法：运用多态
+
+```java
+class Airplane {
+    // ...
+}
+
+class Boeing777 extends Airplane {
+    // ...
+    int getCruisingAltitude() {
+        return this.getMaxAltitude() - this.getPassengerCount();
+    }
+}
+
+class AirForceOne extends Airplane {
+    // ...
+    int getCruisingAltitude() {
+        return this.getMaxAltitude();
+       }
+}
+
+class Cessna extends Airplane {
+    // ...
+    int getCruisingAltitude() {
+        return this.getMaxAltitude() - this.getFuelExpenditure();
+    }
+}
 ```
-    class Airplane {
-            // ...
-        }
 
-    class Boeing777 extends Airplane {
-            // ...
-        int getCruisingAltitude() {
-            return this.getMaxAltitude() - this.getPassengerCount();
-        }
-    }
-
-    class AirForceOne extends Airplane {
-        // ...
-        int getCruisingAltitude() {
-            return this.getMaxAltitude();
-           }
-    }
-
-    class Cessna extends Airplane {
-        // ...
-        int getCruisingAltitude() {
-            return this.getMaxAltitude() - this.getFuelExpenditure();
-        }
-    }
-```
 ---
 
 # <!-- fit --> 4. 缺少文档
 
 ---
-
 
 - 重要的方法没有注释，如关键算法、BUG 修改
 - 无意义的注释太多
@@ -462,43 +480,43 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 
 ```java
 void hashIt(String data) {
-        // The hash
-        long hash = 0;
+    // The hash
+    long hash = 0;
 
-        // Length of string
-        int length = data.length();
+    // Length of string
+    int length = data.length();
 
-        // Loop through every character in data
-        for (int i = 0; i < length; i++) {
-            // Get character code.
-            char mChar = data.charAt(i);
-            // Make the hash
-            hash = ((hash << 5) - hash) + mChar;
-            // Convert to 32-bit integer
-            hash &= hash;
-        }
+    // Loop through every character in data
+    for (int i = 0; i < length; i++) {
+        // Get character code.
+        char mChar = data.charAt(i);
+        // Make the hash
+        hash = ((hash << 5) - hash) + mChar;
+        // Convert to 32-bit integer
+        hash &= hash;
     }
+}
 ```
+
 ---
 
 ## 补救办法：仅仅对包含复杂业务逻辑的东西进行注释
 
 ```java
- void hashIt(String data) {
-        long hash = 0;
-        int length = data.length();
+void hashIt(String data) {
+    long hash = 0;
+    int length = data.length();
 
-        for (int i = 0; i < length; i++) {
-            char mchar = data.charAt(i);
-            hash = ((hash << 5) - hash) + mchar;
+     for (int i = 0; i < length; i++) {
+         char mchar = data.charAt(i);
+         hash = ((hash << 5) - hash) + mchar;
 
-            // Convert to 32-bit integer
-            hash &= hash;
-        }
+        // Convert to 32-bit integer
+        hash &= hash;
     }
-
-
+}
 ```
+
 ---
 
 ## 坏味道：不要在代码库中保存注释掉的代码
@@ -511,12 +529,15 @@ void hashIt(String data) {
     // doSomeMoreStuff();
     // doSoMuchStuff();
 ```
+
 ---
 
 ## 补救办法：移除，把旧的代码留在版本控制里面
+
 ```java
     doStuff();
 ```
+
 ---
 
 ## 坏味道：不要有日志式的注释
@@ -524,26 +545,28 @@ void hashIt(String data) {
 <!-- 记住， 使用版本控制！ 不需要僵尸代码， 注释掉的代码， 尤其是日志式的注释。 使用 `git log` 来
 获取历史记录。 -->
 
-``` java
-    /**
-     * 2016-12-20: Removed monads, didn't understand them (RM)
-     * 2016-10-01: Improved using special monads (JP)
-     * 2016-02-03: Removed type-checking (LI)
-     * 2015-03-14: Added combine with type-checking (JR)
-     */
-     
-    void combine(String a, String b) {
-        return a + b;
-    }
+```java
+/**
+ * 2016-12-20: Removed monads, didn't understand them (RM)
+ * 2016-10-01: Improved using special monads (JP)
+ * 2016-02-03: Removed type-checking (LI)
+ * 2015-03-14: Added combine with type-checking (JR)
+ */
+ 
+void combine(String a, String b) {
+    return a + b;
+}
 ```
 ---
 
 ## 补救办法：移除，使用 `git log` 来获取历史记录
-``` java
-    void combine(String a, String b) {
-            return a + b;
-    }
+
+```java
+void combine(String a, String b) {
+    return a + b;
+}
 ```
+
 ---
 
 ## 坏味道：使用占位符
@@ -551,33 +574,35 @@ void hashIt(String data) {
 <!-- 它们仅仅添加了干扰，让函数和变量名称与合适的缩进和格式化为你的代码提供视觉结构。 -->
 
 ```java
-    ////////////////////////////////////////////////////////////////////////////////
-    // Scope Model Instantiation
-    ////////////////////////////////////////////////////////////////////////////////
-    String[] model = {"foo","bar"};
+////////////////////////////////////////////////////////////////////////////////
+// Scope Model Instantiation
+////////////////////////////////////////////////////////////////////////////////
+String[] model = {"foo","bar"};
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Action setup
-    ////////////////////////////////////////////////////////////////////////////////
-    void action(){
-        //...
-    }
-
+////////////////////////////////////////////////////////////////////////////////
+// Action setup
+////////////////////////////////////////////////////////////////////////////////
+void action(){
+    //...
+}
 ```
+
 ---
+
 ## 补救办法：移除，使用缩进和格式化
+
+```java
+String[] model = {"foo","bar"};
+void action(){
+    //...
+}
 ```
-  String[] model = {"foo","bar"};
-        void action(){
-            //...
-        }
-```
+
 ---
 
 # <!-- fit --> 5. 滥用设计模式
 
 ---
- 
 
 - 单例模式初始化顺序引起 NPE
 - 单例带来的内存问题，尤其使用 list 或者 map
@@ -589,118 +614,125 @@ void hashIt(String data) {
 	Activity也不会被释放一直到进程退出才会释放。 -->
 
 ```java
-	public class CommUtil {
-	    private static CommUtil instance;
-	    private Context context;
-	    private CommUtil(Context context){
-		this.context = context;
-	    }
+public class CommUtil {
+    private static CommUtil instance;
+    private Context context;
 
-	    public static CommUtil getInstance(Context mcontext){
-		if(instance == null){
-		    instance = new CommUtil(mcontext);
-		}
-		return instance;
-	    }
+    private CommUtil(Context context) {
+        this.context = context;
+    }
+
+    public static CommUtil getInstance(Context mcontext) {
+        if (instance == null) {
+            instance = new CommUtil(mcontext);
+        }
+        return instance;
+    }
+}
 ```
+
+---
 
 ## 补救办法：使用长生命周期的引用或及时释放引用
 
 <!-- 能使用Application的Context就不要使用Activity的Content，Application的生命周期伴随着整个进程的周期 -->
 
 ```java
-	public class CommUtil {
-	    private static CommUtil instance;
-	    private Context context;
-	    private CommUtil(Context context){
-		this.context = context;
-	    }
+public class CommUtil {
+    private static CommUtil instance;
+    private Context context;
 
-	    public static CommUtil getInstance(Context mcontext){
-		if(instance == null){
-		    instance = new CommUtil(mcontext.getApplicationContext());
-		}
-		return instance;
-	    }
+    private CommUtil(Context context) {
+        this.context = context;
+    }
+
+    public static CommUtil getInstance(Context mcontext) {
+        if (instance == null) {
+            instance = new CommUtil(mcontext.getApplicationContext());
+        }
+        return instance;
+    }
+}
 ```
 
 ---
 
 # <!-- fit --> 6. 匿名内部类 & 回调地狱
- 
+
 ---
+
 - 随意使用匿名内部类
 - 回调地狱，可读性极差
+
 ---
 
 ## 坏味道：匿名内部类导致内存泄漏
- 
+
 <!-- 
 异步任务和Runnable都是一个匿名内部类，因此它们对当前Activity都有一个隐式引用。如果Activity在销毁之前，任务还未完成， 那么将导致Activity的内存资源无法回收，造成内存泄漏 -->
 
 ```java
- 
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                SystemClock.sleep(10000);
-                return null;
-            }
-        }.execute();
+new AsyncTask<Void, Void, Void>() {
+    @Override
+    protected Void doInBackground(Void... params) {
+        SystemClock.sleep(10000);
+        return null;
+    }
+}.execute();
 
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SystemClock.sleep(10000);
-            }
-        }).start();
+new Thread(new Runnable() {
+    @Override
+    public void run() {
+        SystemClock.sleep(10000);
+    }
+}).start();
 ```
+
 ---
 
 ## 补救办法：使用静态内部类
- 
+
 <!-- 
 使用静态内部类，避免了Activity的内存资源泄漏，当然在Activity销毁时候也应该取消相应的任务AsyncTask::cancel()，避免任务在后台执行浪费资源 -->
 
 ```java
-   static class MyAsyncTask extends AsyncTask<Void, Void, Void> {
-        private WeakReference<Context> weakReference;
- 
-        public MyAsyncTask(Context context) {
-            weakReference = new WeakReference<>(context);
-        }
- 
-        @Override
-        protected Void doInBackground(Void... params) {
-            SystemClock.sleep(10000);
-            return null;
-        }
- 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            MainActivity activity = (MainActivity) weakReference.get();
-            if (activity != null) {
-                //...
-            }
-        }
-    }
-    static class MyRunnable implements Runnable{
-        @Override
-        public void run() {
-            SystemClock.sleep(10000);
-        }
+static class MyAsyncTask extends AsyncTask<Void, Void, Void> {
+    private WeakReference<Context> weakReference;
+
+    public MyAsyncTask(Context context) {
+        weakReference = new WeakReference<>(context);
     }
 
-    new Thread(new MyRunnable()).start();
-    new MyAsyncTask(this).execute();
+    @Override
+    protected Void doInBackground(Void... params) {
+        SystemClock.sleep(10000);
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        MainActivity activity = (MainActivity) weakReference.get();
+        if (activity != null) {
+            //...
+        }
+    }
+}
+
+static class MyRunnable implements Runnable{
+    @Override
+    public void run() {
+        SystemClock.sleep(10000);
+    }
+}
+
+new Thread(new MyRunnable()).start();
+new MyAsyncTask(this).execute();
 ```
 
 ---
 
 ## 坏味道：回调嵌套
-
 
 ```java
 //画一个二维码 (需要在子线程里完成)然后在imageview上显示
@@ -721,29 +753,37 @@ new Thread(new Runnable() {
     }
 }).start();
 ```
+
 ---
-##  补救办法：使用链式调用
+
+## 补救办法1：使用链式调用
+
 ```java
- Observable.just(SHARE_QR_CODE)
-               .map(new Function<String, Bitmap>() {
-                   @Override
-                   public Bitmap apply(String s) throws Exception {
-                       return  CodeCreator.createQRCode(ShareActivity.this, s);
-                   }
-               }).subscribe(new Consumer<Bitmap>() {
-           @Override
-           public void accept(Bitmap bitmap) throws Exception {
-               img_qr_code.setImageBitmap(bitmap);
-           }
-       });
+Observable.just(SHARE_QR_CODE)
+        .map(new Function<String, Bitmap>() {
+            @Override
+            public Bitmap apply(String s) throws Exception {
+                return  CodeCreator.createQRCode(ShareActivity.this, s);
+            }
+        })
+        .subscribe(new Consumer<Bitmap>() {
+            @Override
+            public void accept(Bitmap bitmap) throws Exception {
+                img_qr_code.setImageBitmap(bitmap);
+            }
+        });
 ```
+
 ---
-##  补救办法：使用lambda
-```
+
+## 补救办法2：使用lambda
+
+```java
 Observable.just(SHARE_QR_CODE)
                 .map(s -> CodeCreator.createQRCode(ShareActivity.this, s))
                 .subscribe(bitmap -> img_qr_code.setImageBitmap(bitmap));
 ```
+
 ---
 
 # <!-- fit --> 7. 多线程问题
@@ -756,51 +796,45 @@ Observable.just(SHARE_QR_CODE)
 ---
 
 ## 坏味道：直接在代码使用 new Thread
- 
+
 <!-- - 每次new Thread新建对象性能差
 - 线程缺乏统一管理，可能无限制新建线程，相互之间竞争，及可能占用过多系统资源导致死机或oom。
 - 缺乏更多功能，如定时执行、定期执行、线程中断 -->
 
-
-``` java
-
+```java
 new Thread(new Runnable() {
- 
-	@Override
-	public void run() {
-	    // TODO Auto-generated method stub
-	}
-}).start();
 
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+    }
+}).start();
 ```
---- 
+
+---
 
 ## 补救办法：使用线程池管理
 
- 
 <!-- - 重用存在的线程，减少对象创建、消亡的开销，性能佳。
 - 可有效控制最大并发线程数，提高系统资源的使用率，同时避免过多资源竞争，避免堵塞。
 - 提供定时执行、定期执行、单线程、并发数控制等功能 -->
 
-``` java
-
+```java
 ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 for (int i = 0; i < 10; i++) {
-	final int index = i;
-	singleThreadExecutor.execute(new Runnable() {
- 
-		@Override
-		public void run() {
-			try {
-				System.out.println(index);
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	});
+    final int index = i;
+    singleThreadExecutor.execute(new Runnable() {
+
+        @Override
+        public void run() {
+            try {
+                System.out.println(index);
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    });
 }
 ```
----
-
