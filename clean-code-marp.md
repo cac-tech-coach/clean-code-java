@@ -1,23 +1,40 @@
 ---
 marp: true
 theme: default
-class: invert
-paginate: true
+class: lead
+ipaginate: true
+---
+<!-- _class: invert -->
+
+# <!-- fit -->**整洁代码&重构基础**
+
+---
+<!-- _class: lead -->
+
+![bg fit](./assets/clean-code.png)
+
 ---
 
 <!-- _class: lead -->
 
-# <!-- fit -->**Clean Code**
-
-2020.3.12
-
----
-
-# <!-- fit --> 1. 过长方法 & 过大类
+![bg fit](./assets/clean-code-book.jpg)
+![bg fit](./assets/inspection.png)
+![bg fit](./assets/refactor-book.jpg)
+![bg fit](./assets/refactor-this.png)
 
 ---
 
-* 代码冗余，不是最优实现
+<!-- _class: invert -->
+
+# <!-- fit --> **1. 过长方法 & 过大类**
+
+---
+
+# <!-- fit --> :question:过长方法和过大类曾经给你带来什么困扰？通过什么方式解决？
+
+---
+
+* 代码冗余/重复，不是最优实现
 * 不敢删除遗留代码，怕出问题
 * 复制粘贴造成的帝王类
 * 类职责太多(违反 SRP)
@@ -25,23 +42,23 @@ paginate: true
 
 ---
 
-## 坏味道：方法应该抽象超过一层
+## 坏味道：方法抽象超过一层
 
-<!-- 当在你的函数中有多于一个抽象级别时，你的函数通常做了太多事情。拆分函数将会提升重用性和测试性。 -->
+<!-- 函数如果有多个抽象级别时，说明通常做了太多事情。拆分函数将会提升重用性和可测试性。-->
 
 ``` java
-void parseBetterJSAlternative(String code){
-    String[] REGECES={};
-    String[] statements=code.split(" ");
-    String[] tokens={};
-    for(String regex: Arrays.asList(REGECES)){
-        for(String statement:Arrays.asList(statements)){ //... }
+void parseBetterJSAlternative(String code) {
+    String[] REGECES = {};
+    String[] statements = code.split(" ");
+    String[] tokens = {};
+    for(String regex: Arrays.asList(REGECES)) {
+        for(String statement:Arrays.asList(statements)) { //... }
     }
 
     String[] ast={};
-    for(String token:Arrays.asList(tokens)){ //lex ...}
+    for(String token:Arrays.asList(tokens)) { //lex ...}
 
-    for(String node:Arrays.asList(ast)){ //parse ...}
+    for(String node:Arrays.asList(ast)) { //parse ...}
 }
 ```
 
@@ -50,69 +67,62 @@ void parseBetterJSAlternative(String code){
 ## 补救办法：提取方法
 
 ``` java
-String[] tokenize(String code){
-    String[] REGECES={};
-    String[] statements=code.split(" ");
-    String[] tokens={};
-    for(String regex: Arrays.asList(REGECES)){
-        for(String statement:Arrays.asList(statements)){ //tokens push }
+String[] tokenize(String code) {
+    String[] REGECES = {};
+    String[] statements = code.split(" ");
+    String[] tokens = {};
+    for(String regex: Arrays.asList(REGECES)) {
+        for(String statement:Arrays.asList(statements)) { //tokens push }
     }
     return tokens;
 }
 
-String[] lexer(String[] tokens){
-    String[] ast={};
-    for(String token:Arrays.asList(tokens)){ //ast push }
+String[] lexer(String[] tokens) {
+    String[] ast = {};
+    for(String token:Arrays.asList(tokens)) { //ast push }
     return ast;
 }
 
-void parseBetterJSAlternative(String code){
-    String[] tokens=tokenize(code);
-    String[] ast=lexer(tokens);
-    for(String node:Arrays.asList(ast)){ //parse ...}
+void parseBetterJSAlternative(String code) {
+    String[] tokens = tokenize(code);
+    String[] ast = lexer(tokens);
+    for(String node:Arrays.asList(ast)) { //parse ...}
 }
 ```
 
 ---
 
-## 坏味道：冗余代码
+## 坏味道：重复代码
 
 ``` java
-void showDeveloperList(List<Developer> developers){
-    for(Developer developer:developers){
-        render(new Data(developer.expectedSalary,developer.experience,developer.githubLink));
+void showDeveloperList(List<Developer> developers) {
+    for(Developer developer:developers) {
+        render(new Data(developer.expectedSalary, developer.experience, developer.githubLink));
     }
 }
 
-void showManagerrList(List<Manager> managers){
-    for(Manager manager:managers){
-        render(new Data(manager.expectedSalary,manager.experience,manager.portfolio));
+void showManagerList(List<Manager> managers) {
+    for(Manager manager:managers) {
+        render(new Data(manager.expectedSalary, manager.experience, manager.portfolio));
     }
 }
 ```
 
 ---
 
-## 补救办法：移除冗余代码
+## 补救办法：消除重复
 
-<!-- 竭尽你的全力去避免冗余代码。 冗余代码是不好的， 因为它意味着当你需要修改一些逻辑时会有多个地方
-需要修改。
+<!-- 竭尽你的全力去避免冗余代码。 冗余代码是不好的， 因为它意味着当你需要修改一些逻辑时会有多个地方需要修改。
 
-想象一下你在经营一家餐馆， 你需要记录所有的库存西红柿， 洋葱， 大蒜， 各种香料等等。 如果你有多
-个记录列表， 当你用西红柿做一道菜时你得更新多个列表。 如果你只有一个列表， 就只有一个地方需要更
-新！
+想象一下你在经营一家餐馆， 你需要记录所有的库存西红柿， 洋葱， 大蒜， 各种香料等等。 如果你有多个记录列表， 当你用西红柿做一道菜时你得更新多个列表。 如果你只有一个列表， 就只有一个地方需要更新！
 
-你有冗余代码通常是因为你有两个或多个稍微不同的东西， 它们共享大部分， 但是它们的不同之处迫使你使
-用两个或更多独立的函数来处理大部分相同的东西。 移除冗余代码意味着创建一个可以处理这些不同之处的
-抽象的函数/模块/类。
+你有冗余代码通常是因为你有两个或多个稍微不同的东西， 它们共享大部分， 但是它们的不同之处迫使你使用两个或更多独立的函数来处理大部分相同的东西。 移除冗余代码意味着创建一个可以处理这些不同之处的抽象的函数/模块/类。
 
-让这个抽象正确是关键的， 这是为什么要你遵循 *Classes* 那一章的 SOLID 的原因。 不好的抽象比冗
-余代码更差， 所以要谨慎行事。 既然已经这么说了， 如果你能够做出一个好的抽象， 才去做。 不要重复
-你自己， 否则你会发现当你要修改一个东西时时刻需要修改多个地方。 -->
+让这个抽象正确是关键的， 这是为什么要你遵循 *Classes* 那一章的 SOLID 的原因。 不好的抽象比冗余代码更差， 所以要谨慎行事。 既然已经这么说了， 如果你能够做出一个好的抽象， 才去做。 不要重复你自己， 否则你会发现当你要修改一个东西时时刻需要修改多个地方。 -->
 
 ``` java
-void showList(List<Employee> employees){
-    for(Employee employee:employees){
+void showList(List<Employee> employees) {
+    for(Employee employee:employees) {
         Data data=new Data(employee.expectedSalary,employee.experience,employee.githubLink);
         String portfolio=employee.portfolio;
         if("manager".equals(employee)){
@@ -129,31 +139,30 @@ void showList(List<Employee> employees){
 ## 坏味道：僵尸代码
 
 ``` java
-void  oldRequestModule(String url) {
+void oldRequestModule(String url) {
     // ...
 }
 
-void  newRequestModule(String url) {
+void newRequestModule(String url) {
     // ...
 }
 
-String  req = newRequestModule;
+String req = newRequestModule;
 inventoryTracker("apples", req, "www.inventory-awesome.io");
 ```
 
 ---
 
-## 解救办法：移除僵尸代码
+## 解救办法：安全删除
 
-<!-- 僵死代码和冗余代码同样糟糕。 没有理由在代码库中保存它。 如果它不会被调用， 就删掉它。 当你需要
-它时， 它依然保存在版本历史记录中。 -->
+<!-- 僵死代码和冗余代码同样糟糕。 没有理由在代码库中保存它。 如果它不会被调用， 就删掉它。 当你需要它时， 它依然保存在版本历史记录中。 -->
 
 ``` java
-void  newRequestModule(String url) {
+void newRequestModule(String url) {
     // ...
 }
 
-String  req = newRequestModule;
+String req = newRequestModule;
 inventoryTracker("apples", req, "www.inventory-awesome.io");
 ```
 
@@ -161,10 +170,7 @@ inventoryTracker("apples", req, "www.inventory-awesome.io");
 
 ## 坏味道：违反原则单一职责原则 (SRP)
 
-<!-- 正如代码整洁之道所述， “永远不要有超过一个理由来修改一个类”。 给一个类塞满许多功能， 就像你在航
-班上只能带一个行李箱一样， 这样做的问题你的类不会有理想的内聚性， 将会有太多的理由来对它进行修改。
-最小化需要修改一个类的次数时很重要的， 因为如果一个类拥有太多的功能， 一旦你修改它的一小部分，
-将会很难弄清楚会对代码库中的其它模块造成什么影响。 -->
+<!-- 正如代码整洁之道所述， “永远不要有超过一个理由来修改一个类”。 给一个类塞满许多功能， 就像你在航班上只能带一个行李箱一样， 这样做的问题你的类不会有理想的内聚性， 将会有太多的理由来对它进行修改。最小化需要修改一个类的次数时很重要的， 因为如果一个类拥有太多的功能， 一旦你修改它的一小部分，将会很难弄清楚会对代码库中的其它模块造成什么影响。 -->
 
 ``` java
 class UserSettings {
@@ -184,7 +190,7 @@ class UserSettings {
 
 ---
 
-## 补救办法：移动变量、移动方法... 
+## 补救办法：移动方法
 
 ``` java
 User user;
@@ -204,7 +210,13 @@ void changeSettings(UserSettings settings) {
 
 ---
 
-## 预防方式
+## 预防措施
+
+### 代码规范
+
+* 方法长度限制
+* 类长度限制
+* 接口废弃约定（@Deprecated）
 
 ### CheckStyle
 
@@ -218,20 +230,25 @@ void changeSettings(UserSettings settings) {
 
 ## 重构手法
 
-* 提取方法
-* 移动变量
-* 移动方法
-* 安全移除
+* 提取方法（Extract Method）
+* 移动变量（Move）
+* 移动方法（Move）
+* 安全删除（Safe Delete）
 
 ---
 
+<!-- _class: invert -->
 # <!-- fit --> 2. 命名问题
+
+---
+
+# <!-- fit --> :question:你是否为曾经为命一个好名称而感到头痛，你有什么好的方式解决？
 
 ---
 
 * Chinglish，英文水平参差不齐
 * 方法参数太多，命名随意，无法判断参数副作用
-* 滥用单词缩写
+* 滥用缩写
 * 实现修改了，命名没有修改
 * 害怕散弹式修改，不敢重命名或者修改参数
 
@@ -255,8 +272,7 @@ String currentDate = new SimpleDateFormat("YYYY/MM/DD").format(new Date());
 
 ## 坏味道：魔法值
 
-<!-- 我们要阅读的代码比要写的代码多得多， 所以我们写出的代码的可读性和可搜索性是很重要的。 使用没有
-意义的变量名将会导致我们的程序难于理解， 将会伤害我们的读者， 所以请使用可搜索的变量名。 -->
+<!-- 我们要阅读的代码比要写的代码多得多， 所以我们写出的代码的可读性和可搜索性是很重要的。使用没有意义的变量名将会导致我们的程序难于理解， 将会伤害我们的读者，所以请使用可搜索的变量名。 -->
 
 ``` java
 // 86400000 是什么鬼？
@@ -287,7 +303,7 @@ address.split(cityZipCodeRegex)[1]);
 
 --- 
 
-## 补救办法：使用解释性的变量
+## 补救办法：增加解释性变量
 
 ```java 
 String address = "One Infinite Loop, Cupertino 95014"; 
@@ -298,11 +314,11 @@ String zipCode = address.split(cityZipCodeRegex)[1];
 
 saveCityZipCode(city, zipCode); 
 
-``` 
+```
 
 ---
 
-## 坏味道：使用隐式的缩写
+## 坏味道：使用隐晦的缩写
 
 ```java
 String [] l = {"Austin", "New York", "San Francisco"};
@@ -338,16 +354,9 @@ for (String location : locations) {
 
 ---
 
-## 坏味道： 方法参数过长（超过2个）
+## 坏味道：超长参数列表（超过2个）
 
-<!-- 限制函数参数的个数是非常重要的， 因为这样将使你的函数容易进行测试。 一旦超过三个参数将会导致组
-合爆炸， 因为你不得不编写大量针对每个参数的测试用例。
-
-没有参数是最理想的， 一个或者两个参数也是可以的， 三个参数应该避免， 超过三个应该被重构。 通常，
-如果你有一个超过两个函数的参数， 那就意味着你的函数尝试做太多的事情。 如果不是， 多数情况下一个
-更高级对象可能会满足需求。
-
-当你发现你自己需要大量的参数时， 你可以使用一个对象。 -->
+<!-- 限制函数参数的个数是非常重要的， 因为这样将使你的函数容易进行测试。 一旦超过三个参数将会导致组合爆炸，因为你不得不编写大量针对每个参数的测试用例。没有参数是最理想的，一个或者两个参数也是可以的， 三个参数应该避免， 超过三个应该被重构。 通常，如果你有一个超过两个函数的参数， 那就意味着你的函数尝试做太多的事情。 如果不是， 多数情况下一个更高级对象可能会满足需求。当你发现你自己需要大量的参数时， 你可以使用一个对象。 -->
 
 ``` java
 void createMenu(String title,String body,String buttonText,boolean cancellable){}
@@ -355,7 +364,7 @@ void createMenu(String title,String body,String buttonText,boolean cancellable){
 
 ---
 
-## 补救办法：使用对象封装
+## 补救办法：封装参数对象
 
 ``` java
 class MenuConfig{
@@ -364,12 +373,18 @@ class MenuConfig{
     String buttonText;
     boolean cancellable;
 }
-void  createMenu(MenuConfig menuConfig){}
+void createMenu(@Nullable MenuConfig menuConfig){}
 ```
 
 ---
 
-## 预防方式
+## 预防措施
+
+### 代码规范
+
+* 常量使用（位置、命名）
+* 使用标记注解（android.support.annotations）
+* 建立业务术语表（中英文对照）
 
 ### CheckStyle
 
@@ -377,18 +392,28 @@ void  createMenu(MenuConfig menuConfig){}
 * Method Names（方法名称）
 * Maximum Parameters（最大参数数量）
 
+### 用Codelf解决Chinglish
+
+https://unbug.github.io/codelf/
+
 --- 
 
 ## 重构手法
 
-* 重命名
-* 提取常量
-* 提取变量
-* 提取方法参数对象
+* 重命名（Rename）
+* 提取常量（Extract Constant）
+* 提取变量（Extract Variable）
+* 提取方法参数对象（Extract Parameter）
+* 修改方法签名（Change Signature）
 
 ---
 
+<!-- _class: invert -->
 # <!-- fit --> 3.if/else/for嵌套
+
+---
+
+# <!-- fit --> 为什么 if-else 不是好代码？
 
 ---
 
@@ -474,35 +499,35 @@ double disablityAmount(){
 
 ``` java
 double disablityAmount(){
-    if(_seniority < 2 || _monthsDisabled > 12 ||_isPartTime) 
+    if(_seniority < 2 || _monthsDisabled > 12 ||_isPartTime)
         return 0;
     //do somethig
-    }
-
+}
 ```
-
+<!-- 这段代码还有什么问题？ -->
 ---
 
 ## 坏味道：if-else嵌套没有关联性
 
 ``` java
-double getPayAmount(){
+double getPayAmount() {
     double result;
     if(_isDead) {
         result = deadAmount();
     }else{
-        if(_isSeparated){
+        if(_isSeparated) {
             result = separatedAmount();
         }
-        else{
-            if(_isRetired){
+        else {
+            if(_isRetired) {
                 result = retiredAmount();
-            else{
+            else {
                 result = normalPayAmount();
             }
         }
     }
     return result;
+}
 ```
 
 ---
@@ -590,18 +615,14 @@ public ArrayList<Student> getStudents(int uid){
         }
         return result;
     }
-
 ```
 
 ---
 
 ## 坏味道：过长条件判断语句
 
-<!-- 这看起来似乎是一个不可能的任务。 第一次听到这个时， 多数人会说： “没有 `if` 语句还能期望我干
-啥呢”， 答案是多数情况下你可以使用多态来完成同样的任务。 第二个问题通常是 “好了， 那么做很棒，
-但是我为什么想要那样做呢”， 答案是我们学到的上一条代码整洁之道的理念： 一个函数应当只做一件事情。
-当你有使用 `if` 语句的类/函数是， 你在告诉你的用户你的函数做了不止一件事情。 记住： 只做一件
-事情。 -->
+<!-- 这看起来似乎是一个不可能的任务。 第一次听到这个时， 多数人会说： “没有 `if` 语句还能期望我干啥呢”， 答案是多数情况下你可以使用多态来完成同样的任务。 第二个问题通常是 “好了， 那么做很棒，但是我为什么想要那样做呢”， 答案是我们学到的上一条代码整洁之道的理念： 一个函数应当只做一件事情。
+当你有使用 `if` 语句的类/函数是， 你在告诉你的用户你的函数做了不止一件事情。 记住： 只做一件事情。 -->
 
 ``` java
 class Airplane{
@@ -651,14 +672,23 @@ class Cessna extends Airplane {
 
 ---
 
-## 预防方式
+## 预防措施
+
+### 代码规范
+
+* 统一缩进（使用 Space）
+* 限制方法复杂度（不超过 7）
 
 ### CheckStyle
 
 * Nested For Depth（for嵌套深度）
 * Nested If Depth（if嵌套深度）
 * Simplify Boolean Expression（简化布尔表达式）
-* Cyclomatic Complexity（循环复杂度）
+* Cyclomatic Complexity（圈复杂度）
+
+### git-hpyer-blame
+
+https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/git-hyper-blame.html
 
 ---
 
@@ -670,7 +700,12 @@ class Cessna extends Airplane {
 
 ---
 
+<!-- _class: invert -->
 # <!-- fit --> 4. 缺少文档
+
+---
+
+# <!-- fit --> 在编码过程中，那些注释文档是必需的？
 
 ---
 
@@ -707,7 +742,7 @@ void hashIt(String data) {
 
 ---
 
-## 补救办法：仅仅对包含复杂业务逻辑的东西进行注释
+## 补救办法：仅对包含复杂业务逻辑进行注释
 
 ``` java
 void hashIt(String data) {
@@ -810,7 +845,11 @@ void action(){
 
 ---
 
-## 预防方式
+## 预防措施
+
+### 代码规范
+
+* 公共接口必须规范注释
 
 ### CheckStyle
 
@@ -819,8 +858,12 @@ void action(){
 
 ---
 
+<!-- _class: invert -->
 # <!-- fit --> 5. 滥用设计模式
 
+---
+
+<!-- fit --> 在项目中，经常使用那些了那些设计模式，为什么使用？使用时有什么地方需要注意吗？
 ---
 
 * 单例模式初始化顺序引起 NPE
@@ -878,7 +921,7 @@ public class CommUtil {
 
 ---
 
-## 预防方式
+## 预防措施
 
 ### CheckStyle
 
@@ -889,9 +932,16 @@ public class CommUtil {
 
 * debug notify
 
+### 依赖注入
+
 ---
 
+<!-- _class: invert -->
 # <!-- fit --> 6. 匿名内部类 & 回调地狱
+
+---
+
+# <!-- fit --> 在项目中，你曾经遇到过哪些内存问题？你是如何排查优化？
 
 ---
 
@@ -953,7 +1003,7 @@ static class MyAsyncTask extends AsyncTask<Void, Void, Void> {
     }
 }
 
-static class MyRunnable implements Runnable{
+static class MyRunnable implements Runnable {
     @Override
     public void run() {
         SystemClock.sleep(10000);
@@ -966,7 +1016,7 @@ new MyAsyncTask(this).execute();
 
 ---
 
-## 坏味道：回调嵌套
+## 坏味道：回调地狱
 
 ``` java
 //画一个二维码 (需要在子线程里完成)然后在imageview上显示
@@ -1020,7 +1070,12 @@ Observable.just(SHARE_QR_CODE)
 
 ---
 
-## 预防方式
+## 预防措施
+
+### 库/语言特性
+
+* Java 8 lambda
+* RxJava
 
 ### Lint
 
@@ -1033,7 +1088,12 @@ Observable.just(SHARE_QR_CODE)
 
 ---
 
+<!-- _class: invert -->
 # <!-- fit --> 7. 多线程问题
+
+---
+
+# <!-- fit --> 多线程给你带来过什么样的困扰？你是如何解决的？
 
 ---
 
@@ -1062,7 +1122,7 @@ public class Counter{
 
 ---
 
-## 改进办法：使用非锁定算法
+## 改进办法：使用无锁算法
 
 ``` java
 public class AtomicCounter{
@@ -1094,7 +1154,6 @@ public class AtomicCounter{
 
 ``` java
 new Thread(new Runnable() {
-
     @Override
     public void run() {
         // TODO Auto-generated method stub
@@ -1113,32 +1172,29 @@ new Thread(new Runnable() {
 
 ``` java
 ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
-for (int i = 0; i < 10; i++) {
-    final int index = i;
-    singleThreadExecutor.execute(new Runnable() {
 
-        @Override
-        public void run() {
-            try {
-                System.out.println(index);
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    });
-}
+singleThreadExecutor.execute(new Runnable() {
+    @Override
+    public void run() {
+        // TODO Auto-generated catch block
+    }
+});
+
 ```
 
 ---
 
-## 预防方式
+## 预防措施
 
 ### Alibaba Coding Gudelines
 
 * Threads should be provided by thread pools
 * A thread pool should be created by ThreadPoolExecutor rather than Executors.
+
+### 库/语言特性
+
+* RxJava
+* coroutine
 
 ---
 
