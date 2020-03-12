@@ -1083,6 +1083,20 @@ Observable.just(SHARE_QR_CODE)
 
 ---
 
+## 坏味道：回调地狱。补救办法3：使用 coroutine
+
+``` kotlin
+val job = launch(Background) {
+    val bitmap = CodeCreator.createQRCode(ShareActivity.this, SHARE_QR_CODE)
+    launch(UI) {
+        img_qr_code.setImageBitmap(bitmap)
+    }
+}
+
+```
+
+---
+
 ## 预防措施
 
 ### 库/语言特性
