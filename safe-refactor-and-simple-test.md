@@ -13,7 +13,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 
-## 用 Code Inspection 寻找坏味道
+## :bulb:用 Code Inspection 寻找坏味道
 
 * Sonar Lint
 * Alibaba Guideline
@@ -35,7 +35,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 
-### 我最常用的快捷键
+### :bulb:我最常用的快捷键
 
 * Context Actions(Alt+Enter)
 * Refactor This(Ctrl+T)
@@ -45,7 +45,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 
-## 最大化 ROI
+## :bulb:最大化 ROI
 
 * 围绕最有价值的代码
       * 理解起来难（长方法、复杂条件）
@@ -63,7 +63,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 
-## 小步前进
+## :bulb:小步前进
 
 * 随时 Undo
 * 多尝试几种自动重构
@@ -73,7 +73,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 ---
 
 
-## 单元测试回顾
+## :question:单元测试回顾
 
 * :question:F.I.R.S.T原则？
 * :question:测试类、测试方法命名规范？
@@ -102,7 +102,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 
-## 准备活动
+## :heart:准备活动
 
 - Code Inspection 介绍
 - Android Studio 快捷键介绍
@@ -110,7 +110,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 
-## 轻松热身：FeedsPresenter
+## :heartbeat:轻松热身：FeedsPresenter
 
 - 几乎不用自己写代码
 - 单元测试不用 mock
@@ -126,7 +126,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 
-## 强度升级：CreateIssuePresenter
+## :heartpulse:强度升级：CreateIssuePresenter
 
 - 用到了 Robolectric 和 Mockito
 
