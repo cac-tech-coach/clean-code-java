@@ -63,7 +63,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 * 投入相对低
       * 安全重构就可以完成
       * 尝试失败立即回滚
-      * 不用 PowerMock
+      * 可以使用 Robolectric 和 Mockito，不要用 PowerMock
 
 ---
 
@@ -131,7 +131,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 3. 第三步：提取条件方法
 4. 第四步：使用@VisibleForTesting，提高方法 access level
 5. 第五步：编写单元测试，命名回顾，Live template
-6. 第六步：用 AssertJ 提高断言可读性 -->
+6. 第六步：用 Truth 提高断言可读性 -->
    
 
 ---
