@@ -140,5 +140,15 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 - 用到了 Robolectric 和 Mockito
 
-
+<!-- 第一步：功能及代码上下文理解
+互动话题1：大家觉得这段代码有那些坏味道？
+第二步：抽取封装函数参数
+第三步：提取条件方法
+第四步：简化 return，if/eles
+互动话题2：如何快速创建一个测试类？
+第五步：编写单元测试，Android依赖mockito进行行为校验
+互动话题3：android.text.TextUtils not mocked问题？
+第六步：Android依赖rebolectric，SDK版本问题
+第七部：完成所有条件测试case，显示方法覆盖率
+第八部：总结对比重构前后代码，阅读性及代码可测试性 -->
 
