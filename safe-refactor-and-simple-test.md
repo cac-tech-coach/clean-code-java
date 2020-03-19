@@ -11,6 +11,16 @@ paginate: true
 
 CAC@OPPO by 黄俊彬 & 覃宇
 
+<!-- 遗留代码重构&测试(入门篇)
+
+1. 先重构还是先测试？
+2. 如何进行安全重构？
+3. 单元测试真的很难写吗？
+
+理念介绍（约30分钟）
+代码展示（约60分钟）
+回顾讨论（约20分钟） -->
+
 ---
 
 ## :bulb:用 Code Inspection 寻找坏味道
@@ -129,5 +139,6 @@ CAC@OPPO by 黄俊彬 & 覃宇
 ## :heartpulse:强度升级：CreateIssuePresenter
 
 - 用到了 Robolectric 和 Mockito
+
 
 
