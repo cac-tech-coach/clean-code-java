@@ -30,7 +30,6 @@ interface MyService {
 Retrofit retrofit = new Retrofit.Builder()
     // 服务可能挂掉，或者还没实现，或者网络延时、中断
     .baseUrl("https://example.com/")
-
     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
     .build();
 
@@ -41,7 +40,7 @@ myService.getUser()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         // 可能与界面代码耦合
-        .subscribe(user -> view.load(user);
+        .subscribe(user -> view.load(user));
 ```
 
 ---
@@ -90,6 +89,7 @@ myService.getUser()
         // 可能与界面代码耦合
         .subscribe(user -> view.load(user));
 ```
+> 依赖：Retrofit、网络连接、[https://example.com/]()、View、异步
 
 ---
 
@@ -112,9 +112,7 @@ stubService.getUser()
 
 assertThat(view)...
 ```
-> 替代 MyService 实现
 > 解除的依赖：Retrofit、网络连接、https://example.com/
-> 异步稳定性无法保障
 
 ---
 
@@ -128,7 +126,7 @@ User userResponse = null；
 stubService.getUser()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(user -> userResponse = user）;
+        .subscribe(user -> userResponse = user));
 
 assertThat(user)...
 ```
@@ -184,9 +182,6 @@ mockService.getUser()
         .subscribe(user -> view.load(user));
 assertThat(view)...
 ```
-> 替代：MyService 实现、正常网络连接
-> 解除的依赖：https://example.com/
-> 异步稳定性无法保障
 
 ---
 
@@ -202,19 +197,18 @@ behavior.setDelay(0, MILLISECONDS);
 mockService.getUser()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(user -> view.load(user);
+        .subscribe(user -> view.load(user));
 
 assertThat(view)...
 ```
-> 替代：MyService 实现、失败网络连接
-> 解除的依赖：https://example.com/
-> 异步稳定性无法保障
+> 解除的依赖：https://example.com/、网络连接
 
 ---
 
 ## 4. 解决异步的稳定性问题
 
 ```java
+// 以下是测试代码
 // RxJava 提供给的“假”异步实现 TestSubscriber
 TestSubscriber<User> testSubscriber = TestSubscriber.create();
 
@@ -222,16 +216,45 @@ mockService.name().subscribe(testSubscriber);
 testSubscriber.assertValue(expectedUser);
 testSubscriber.assertCompleted();
 ```
-> 异步稳定得到保障，还可以模拟异步各种异常
+> 解除的依赖：异步
 
 ---
 
 ## 5. 使用本地的“假”服务代替真实服务
 
 ```java
-
+// 以下是测试代码
+// 让 Retrofit 用本地服务代替 https://example.com/
+MockWebServer mockWebServer = new MockWebServer();
+Retrofit retrofit = new Retrofit.Builder()
+    .baseUrl(mockWebServer.url("/"))
+    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+    .build();
+MyService myService = retrofit.create(MyService.class)
 ```
 
+---
+## 5. 使用本地的“假”服务代替真实服务(续)
+```json 
+// 存放在本地测试得 Response 文件
+{"name":"qinyu", "phnoe":"11123456789"}
+```
+
+```java
+// 读取本地文件模拟“假”的 Response
+MockResponse response = new MockResponse()
+        .setResponseCode(HttpURLConnection.HTTP_OK)
+        .setBody(readContentFromFilePath());
+mockWebServer.enqueue(response);
+
+myService.getUser()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(user -> view.load(user));
+
+assertThat(view)...
+```
+> 解除的依赖：网络连接、https://example.com/
 ---
 
 ## 小结：测试替身的种类
@@ -298,6 +321,8 @@ testSubscriber.assertCompleted();
 
 - Mockito（使用得最多，可读性最好）
 - Robolectric（使用最新 Android 源码在 JVM 上编译，基本上等同原生行为）
+- 各种来源库自带的 Mock/Test Utils
+- 不建议使用：Powermock
 
 ---
 
@@ -308,11 +333,8 @@ testSubscriber.assertCompleted();
 
 ---
 
-### 建议：不用或者少用，重构是更优先得选项
+### 建议：不用或者少用，重构是优先选择
 
 1. 不要“模拟”不确定的行为
 2. 不要“模拟”被测类，只模拟它们的依赖
 3. 不要模拟传递依赖，只模拟直接依赖
-
-
-
