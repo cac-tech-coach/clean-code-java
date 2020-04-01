@@ -76,7 +76,7 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 * Repository
 * Presenter
 
-## 集成测试
+## 接口测试
 
 * Local data source
 
@@ -99,9 +99,10 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 * Repository
 * ViewModel
 
-## 集成测试
+## 接口测试
 
 * Local data source
+* service
 
 ## 功能测试
 
@@ -113,6 +114,7 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 
 ---
  
+
 # 遗留系统测试策略
 
 1. 补充核心功能的功能和集成测试，以保护核心功能不被破坏
@@ -124,6 +126,70 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 
 # <!--fit--> Demo
 
-X项目组，开发新用户故事，使用MVP架构，并为Presenter覆盖单元测试
+X项目组，开发新用户故事，使用MVP架构重构，并为Presenter新业务逻辑覆盖单元测试
+
+ ---
+
+ # 用户故事
+
+ ## 动态服务更新后进入应用及时展示出来
+
+ As a : 服务订阅用户
+ I want: 有新的服务更新
+ So that: 可以第一时间看到动态服务
+
+ ---
+
+# 原实现逻辑及问题
+
+``` 
+class XView extend View{
+    void show();
+    void queryData();
+}
+
+```
+
+* 在自定义View中实现了大部分的业务逻辑，编写新功能时对原有的代码改动大
+* 新业务代码和View层耦合，测试编写难度大
 
  
+---
+
+# 重构实现
+
+``` 
+class XPresenter{
+    XView xView;
+    void queryData();
+    //关键检查是否有新的服务更新
+    public boolean checkIfHasNewServiceCards(){
+        boolen hasNewCard=false;
+        if(currentCount>lastCount){
+            hasNewCard=true;
+        }else if(!mLastSceneSet.containtsAll(mCurrentSceneSet)){
+            hasNewServiceCards=true;
+        }
+        saveCardsSet(hasNewCards);
+        setLastSceneSet();
+        return hasNewServiceCards;
+    }
+}
+```
+
+* 使用MVP模式定义对应的Presenter将业务逻辑与View层剥离（方法抽取、移动）
+* 对新增业务方法checkIfHasNewServiceCards编写单元测试(mock、Junit)
+
+---
+
+# 讨论：还有哪些地方可以优化:question:
+
+---
+
+# 注意
+
+1. Presenter 直接依赖了XView，应该定义接口进行隔离
+2. 为新的业务方法补充单元测试后，原的关键方法也当及时补充测试
+
+
+
