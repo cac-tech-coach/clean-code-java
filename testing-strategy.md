@@ -136,6 +136,13 @@ X项目组，开发新用户故事，使用MVP架构重构，并为Presenter新�
  I want: 有新的服务更新
  So that: 可以第一时间看到动态服务
 
+ **AC1**: 在应用底部
+ Given：用户已将列表收起或不存在服务信息
+ When：有新的服务
+ Then：将列表展示出来（堆叠状态）
+
+// Other AC ...... 
+
  ---
 
 # 原实现逻辑及问题
@@ -168,15 +175,46 @@ class XPresenter{
         }else if(!mLastSceneSet.containtsAll(mCurrentSceneSet)){
             hasNewServiceCards=true;
         }
-        saveCardsSet(hasNewCards);
-        setLastSceneSet();
+        //do something ... ...
         return hasNewServiceCards;
     }
 }
 ```
 
 * 使用MVP模式定义对应的Presenter将业务逻辑与View层剥离（方法抽取、移动）
-* 对新增业务方法checkIfHasNewServiceCards编写单元测试(mock、Junit)
+* 对新增业务方法checkIfHasNewServiceCards编写单元测试 
+
+---
+
+# 单元测试
+
+``` 
+class XViewPresenterTest{
+    var xPresenter:XPresenter
+    var xView=mock(XView::class.java)
+    var callBack=mock(CallBack::class.java)
+
+    @Before
+    fun setUp{
+        xPresenter=XPresenter(xView,callBack)
+    }
+
+    @Test
+    fun `should return true when checkIfHasNewServiceCards called if have new service cards with last set is empty` (){
+        //Given
+        val currentList=getElementsList()
+        //when
+        val result=presenter.checkIfHasNewServiceCards()
+        //Then
+        Assert.assertTrue(result)
+    }
+
+    // other test case ... ...
+
+}
+```
+* 覆盖方法的条件分支
+* mock隔离依赖
 
 ---
 
