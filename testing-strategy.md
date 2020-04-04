@@ -71,8 +71,20 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 
 ---
 
-# 什么样的情形适合用？有什么样的要求？
+ 
 
+## MVP优点
+
+1. 复杂的逻辑处理放在presenter进行处理，减少了activity的臃肿。
+2. M层与V层完全分离，修改V层不会影响M层，降低了耦合性。
+3. 可以将一个Presenter用于多个视图，而不需要改变Presenter的逻辑。
+4. P层与V层的交互是通过接口来进行的，便于单元测试。:+1:
+
+## MVP缺点
+
+1. 视图和Presenter的交互会过于频繁，有时需要定义大量的接口
+2. Presenter 对 Activity 与 Fragment 的生命周期是无感知的
+ 
 ---
 
 # 分层测试策略
@@ -95,18 +107,23 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 
 ---
 
-# 怎么和现在具体的实现做讨论？
-
----
-
 # MVVM
 
 ![bg containt 60%](/assets/mvvm.png)
 
 ---
 
-# 什么样的情形适合用？有什么样的要求？
+## MVVM优点
 
+1. ViewModel：因设备配置改变导致 Activity 重建时，无需从 Model 中再次加载数据，减少了 IO 操作
+2. LiveData：更新 UI 时，不用再关注生命周期问题
+3. Data Binding：可以有效减少模板代码的编写，而且目前已经支持双向绑定
+
+## MVVM缺点
+1. 数据绑定使得Bug很难被调试
+2. 数据双向绑定不利于代码重用，不能简单重用View
+
+ 
 ---
 
 # 分层测试策略
@@ -126,6 +143,12 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 ### 大型测试
 
 ?
+
+---
+
+# 如何选？
+1. 对于偏向展示型的APP，绝大多数业务逻辑都在后端，app主要功能就是展示数据，交互等，建议使用MVVM。
+2. 对于遗留的代码，使用MVP可以更低成本减低代码耦合度及提高可测试性
 
 ---
 
@@ -154,40 +177,56 @@ X项目组，开发新用户故事，使用MVP架构重构，并为Presenter新�
 
  ---
 
- # 测试策略分析 (KickOff、DeskCheck)
+ # 测试策略制定-KickOff
 
- 表格示例？ 小型 中型 大型    AC质量高，按AC来。
+| 类型   | 内容                                                         | 负责人员  |
+|--------|--------------------------------------------------------------|----------|
+| 小型测试 | 1、识别判断服务是否更新                                          | 开发人员  |
+| 中型测试 | 1、当列表收起时，有新服务，展示列表 <br> 2、当服务为空时，有新服务，展示列表 | 开发人员  |
+| 大型测试 | 不覆盖（依赖服务推送数据）                                        | 测试工程师 |
 
- 1. 服务更新逻辑判断-小型测试
- 2. 列表展示-中型测试
- 3. 
+### 当AC质量足够高时，按AC作为单元进行分析 :+1:
 
+ 
  ---
 
 # 原实现逻辑及问题
 
 ``` 
 class XView extend View{
-    //找一个典型的方法实现伪代码例子
-    void show();
-    void queryData();
+    private void refreshXXXResult(){
+        if(container==null||adapter==null){
+            return;
+        }
+        mAdapter.setCardResults();
+        int count=Helper.getAllSceneServiceCount();
+        if(sceneCount<1){
+            container.setVisibility(GONE);
+            if(cardStatus.get()==XXX){
+                //do something
+            }
+            if(cardStatus.get()==YYY){
+               //do something
+            }
+        }else{
+            if(serviceView.getVisibility()==GONE){
+            // update view state
+            }
+        }
+    }
 }
-
 ```
 
 * 在自定义View中实现了大部分的业务逻辑，编写新功能时对原有的代码改动大
 * 新业务代码和View层耦合，测试编写难度大
 
- 
 ---
 
 # 重构实现
 
-//原来View的变化，与Presenter的关系
-
 ``` 
 class XPresenter{
-    //View 没有按标准的接口定义
+
     XView xView;
     void queryData();
     //关键检查是否有新的服务更新
@@ -206,6 +245,7 @@ class XPresenter{
 
 * 使用MVP模式定义对应的Presenter将业务逻辑与View层剥离（方法抽取、移动）
 * 对新增业务方法checkIfHasNewServiceCards编写单元测试 
+* XView直接依赖实现，没有按标准的接口定义 :-1:
 
 ---
 
@@ -232,10 +272,13 @@ class XViewPresenterTest{
         Assert.assertTrue(result)
     }
 
+    @Test
+    fun `should return false when checkIfHasNewServiceCards called if delete a dervice card` ()
+
+     @Test
+    fun `should return false when checkIfHasNewServiceCards called if service card do not change` ()
+
     // other test case ... ...
-
-    //补充其他的方法名称
-
 }
 ```
 
@@ -244,21 +287,16 @@ class XViewPresenterTest{
 
 ---
 
-# 讨论：还有哪些地方可以优化:question:
+# DeskCheck
+
+* 展示测试的AC覆盖
+* 展示测试的通过率
 
 ---
 
-# 注意
+# 回顾
 
-1. Presenter 直接依赖了XView，应该定义接口进行隔离
-2. 为新的业务方法补充单元测试后，原的关键方法也当及时补充测试
-
----
-
-# 回顾总结
-
-1、整体流程思路
-2、过程注意事项
+![bg 70%](assets/demo-summary.png)
 
 ---
 
