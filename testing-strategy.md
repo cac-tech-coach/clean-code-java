@@ -16,7 +16,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 
-# 回顾：项目中做了那些类型的自动化测试:question:
+# 讨论：项目中做了那些类型的自动化测试:question:
 
 ---
 
@@ -189,7 +189,7 @@ X项目组，开发新用户故事，使用MVP架构重构，并为Presenter新�
  
  ---
 
-# 原实现逻辑及问题
+# 原实现逻辑
 
 ``` 
 class XView extend View{
@@ -216,12 +216,16 @@ class XView extend View{
 }
 ```
 
+---
+
+# 存在问题
+
 * 在自定义View中实现了大部分的业务逻辑，编写新功能时对原有的代码改动大
 * 新业务代码和View层耦合，测试编写难度大
 
 ---
 
-# 重构实现
+# 重构-抽取Presenter
 
 ``` 
 class XPresenter{
@@ -241,6 +245,10 @@ class XPresenter{
     }
 }
 ```
+
+---
+
+# 总结
 
 * 使用MVP模式定义对应的Presenter将业务逻辑与View层剥离（方法抽取、移动）
 * 对新增业务方法checkIfHasNewServiceCards编写单元测试 
@@ -280,6 +288,10 @@ class XViewPresenterTest{
     // other test case ... ...
 }
 ```
+
+---
+
+# 总结
 
 * 覆盖方法的条件分支
 * mock隔离依赖view
