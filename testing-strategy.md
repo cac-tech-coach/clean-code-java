@@ -86,7 +86,7 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 
 # 典型应用架构 MVP
 
-![bg right fit 80%](/assets/mvp.png)
+![bg right fit 80%](assets/mvp.png)
 
 ---
 
@@ -141,7 +141,7 @@ Google 根据自己 APK 开发团队的实践经验，采用测试驱动开发�
 
 # 典型应用架构 MVVM
 
-![bg right fit 100%](/assets/mvvm.png)
+![bg right fit 100%](assets/mvvm.png)
 
 ---
 
