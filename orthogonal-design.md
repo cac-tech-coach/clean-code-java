@@ -35,7 +35,7 @@ class ChooseLocalImageActivity : AppCompatActivity() {
         lvList.adapter= listAdapter
     }
 
-    fun getLocalImageList():List<Image>{
+    private fun getLocalImageList():List<Image>{
         var imageList= mutableListOf<Image>()
         //从本地读出图片列表
         //... ...
@@ -68,7 +68,7 @@ class ChooseRemoteImageActivity : AppCompatActivity() {
         lvList.adapter= listAdapter
     }
 
-    fun getRemoteImageList():List<Image>{
+    private fun getRemoteImageList():List<Image>{
         //省略异步回调 ... ...
         var imageList= mutableListOf<Image>()
         //从通过API读出图片列表
@@ -83,7 +83,13 @@ class ChooseRemoteImageActivity : AppCompatActivity() {
 
 # 重复设计 :-1:
 
-## Copy-Paste是最快的实现方法，但会产生「重复设计」、散弹式修改
+## Copy-Paste是最快的实现方法，但会产生「重复设计」
+
+---
+
+# 散弹式修改 :sob:
+
+> 需求：页面除了支持列表布局，还需要支持九宫格布局
 
 ---
 
@@ -284,3 +290,56 @@ class ChooseFileActivity: AppCompatActivity() {
 }
 ```
 
+---
+
+> 需求四：选择页面需要支持按时间或大小进行排序 ⏬
+
+---
+
+# 接口修改
+
+## 增加排序字段及排序类型
+
+``` 
+interface FileDataSource<T:BaseFileInfo> :Serializable{
+    fun getFileList(orderKey:String,orderDesc:Boolean):List<T>
+}
+```
+
+---
+
+> 🙈 需求五：选择页面需要同时支持排序规则及按文件类型过滤 ⏬ **&** 📔
+
+---
+
+<!-- _class: invert -->
+
+## <!--fit--> 4️⃣ 缩小依赖范围&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
+
+> 两个模块之间并不存在耦合，它们的都共同耦合在 API 上。因而 需要考虑API 如何定义才能降低耦合度
+
+---
+
+# 条件动态配置
+
+```
+class Condition{
+    //字段
+    val field:String=""
+    //类型
+    val type:OptType=OptType.NULL
+    //值
+    val value:String=""
+}
+
+interface FileDataSource<T:BaseFileInfo> :Serializable{
+    fun getFileList(conditions: List<Condition>):List<T>
+}
+```
+---
+
+<!-- _class: invert -->
+
+# <!--fit-->一切围绕着变化
+
+ # <!--fit-->由变化驱动，反过来让系统演进的更容易应对变化
