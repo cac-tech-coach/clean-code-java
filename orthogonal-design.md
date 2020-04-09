@@ -159,7 +159,7 @@ class ChooseImageActivity : AppCompatActivity() {
 
 ---
 
-# 分离
+# 分离(单一职责原则)
 
 ``` 
 interface ImageDataSource{
@@ -188,7 +188,7 @@ class RemoteImageSource :ImageDataSource{
 
 ---
 
-# 依赖倒置原则
+# 抽象(依赖倒置原则)
 
 ``` 
 class ChooseImageActivity : AppCompatActivity() {
@@ -301,14 +301,14 @@ class ChooseFileActivity: AppCompatActivity() {
 ## 增加排序字段及排序类型
 
 ``` 
-interface FileDataSource<T:BaseFileInfo> :Serializable{
+interface FileDataSource<T:BaseFileInfo>{
     fun getFileList(orderKey:String,orderDesc:Boolean):List<T>
 }
 ```
 
 ---
 
-> 🙈 需求五：选择页面需要同时支持排序规则及按文件类型过滤 ⏬ **&** 📔
+>  🙈 需求五：选择页面需要同时支持排序规则及按文件类型过滤 ⏬ **&** 📔
 
 ---
 
@@ -322,7 +322,7 @@ interface FileDataSource<T:BaseFileInfo> :Serializable{
 
 # 条件动态配置
 
-```
+``` 
 class Condition{
     //字段
     val field:String=""
@@ -332,14 +332,37 @@ class Condition{
     val value:String=""
 }
 
-interface FileDataSource<T:BaseFileInfo> :Serializable{
+interface FileDataSource<T:BaseFileInfo> {
     fun getFileList(conditions: List<Condition>):List<T>
 }
 ```
+
+---
+
+<!-- _class: invert -->
+
+# <!--fit-->&emsp; ❓ 结束 &emsp; 
+
+---
+
+> 🔪 需求六：除了聊天，OA、考勤等其他模块也需要支持选择文件功能 💣💣💣
+
+---
+
+# 建造者模式
+
+``` 
+  ChooseFileActivity.Builder(this)
+            .setCondition(mutableListOf())
+            .setDataSource(RemoteFileSource())
+            .onCreate()
+```
+
 ---
 
 <!-- _class: invert -->
 
 # <!--fit-->一切围绕着变化
 
- # <!--fit-->由变化驱动，反过来让系统演进的更容易应对变化
+# <!--fit-->由变化驱动，反过来让系统演进的更容易应对变化
+
