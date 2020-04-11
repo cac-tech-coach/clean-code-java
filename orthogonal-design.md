@@ -9,7 +9,7 @@ paginate: true
 
 # <!--fit--> &emsp; &emsp; 案例展示&emsp; &emsp; 
 
-# <!--fit--> &emsp; &emsp; 某项目聊天软件设计&emsp; &emsp; 
+# <!--fit--> &emsp; &emsp; X项目软件设计演化之旅 🗺️&emsp; &emsp; 
 
  ---
 
@@ -81,6 +81,10 @@ class ChooseRemoteImageActivity : AppCompatActivity() {
 
 ---
 
+# 讨论：有没有同学遇到这种情况，你是如何解决:question:
+
+---
+
 # 重复设计 :-1:
 
 ## Copy-Paste是最快的实现方法，但会产生「重复设计」
@@ -140,6 +144,12 @@ class ChooseImageActivity : AppCompatActivity() {
 }
 
 ```
+
+---
+
+# 问题 :question:
+
+* ## 开放封闭原则，对扩展是开放的, 而对修改是封闭的。
 
 ---
 
@@ -308,7 +318,7 @@ interface FileDataSource<T:BaseFileInfo>{
 
 ---
 
->  🙈 需求五：选择页面需要同时支持排序规则及按文件类型过滤 ⏬ **&** 📔
+> 🙈 需求五：选择页面需要同时支持排序规则及按文件类型过滤 ⏬ **&** 📔
 
 ---
 
@@ -346,6 +356,10 @@ interface FileDataSource<T:BaseFileInfo> {
 ---
 
 > 🔪 需求六：除了聊天，OA、考勤等其他模块也需要支持选择文件功能 💣💣💣
+
+---
+
+# 讨论：支持多模块调用，你会怎样进行设计:question:
 
 ---
 
