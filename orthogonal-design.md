@@ -19,7 +19,7 @@ paginate: true
 
 <!-- _class: invert -->
 
-![bg brightness:0.2](https://upload-images.jianshu.io/upload_images/4099-04dfbbf2072ad2af.jpg?imageMogr2/auto-orient/strip|imageView2/2/w/772/format/webp)
+![bg brightness:0.2](https://insights.thoughtworks.cn/wp-content/uploads/2018/09/3.jpg)
 
 # <!-- fit -->**正交设计**&emsp; &emsp; 
 
@@ -34,7 +34,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 软件设计最重要的目的是**实现功能**。随着时间推移，不可提前预知的**不确定性**导致软件的复杂度不断增加，超出了开发者的**认知极限**，功能实现越来越难。软件设计是解决这个问题的重要手段。
 
-> 软件设计是为了在让软件在**长期范围**内**容易应对变化**。——*Kent Beck*
+> 软件设计是为了让软件在**长期范围**内**容易应对变化**。——*Kent Beck*
 
 ---
 <!-- _class: invert -->
@@ -47,8 +47,9 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 # 模块化，分而治之 
 
-* 讲影响范围局部化
-* 带来了模块的复用
+- 降低认知难度
+- 将影响局部化
+- 带来模块复用
 
 ---
 <!-- _class: invert -->
@@ -83,6 +84,8 @@ CAC@OPPO by 黄俊彬 & 覃宇
 * D 依赖倒置原则
 
 > 一个类只应该有一个**变化原因**（**职责**）。——Robert. C. Martin
+
+<!-- 单一职责是所有设计原则的基础，开闭原则是设计的终极目标。里氏替换原则强调的是子类替换父类后程序运行时的正确性，它用来帮助实现开闭原则。而接口隔离原则用来帮助实现里氏替换原则，同时它也体现了单一职责。依赖倒置原则是过程式编程与 OO 编程的分水岭，同时它也被用来指导接口隔离原则。 -->
 
 ---
 <!-- _class: invert -->
@@ -179,7 +182,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 # 实现
 
-``` java
+```kotlin
 class ChooseLocalImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -212,7 +215,7 @@ class ChooseLocalImageActivity : AppCompatActivity() {
 
  # 快速实现
 
-``` java
+```kotlin
 class ChooseRemoteImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -266,7 +269,7 @@ class ChooseRemoteImageActivity : AppCompatActivity() {
 
  # 实现 
 
-``` java
+```kotlin
 class ChooseImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -330,7 +333,7 @@ class ChooseImageActivity : AppCompatActivity() {
 
 # 分离(单一职责原则)
 
-``` java
+```kotlin
 interface ImageDataSource{
     fun getImageList():List<Image>
 }
@@ -367,7 +370,7 @@ class RemoteImageSource :ImageDataSource{
 
 # 抽象(依赖倒置原则)
 
-``` 
+```kotlin
 class ChooseImageActivity : AppCompatActivity() {
 
     var imageDataSource:ImageDataSource? = null
@@ -380,7 +383,7 @@ class ChooseImageActivity : AppCompatActivity() {
 
     private fun showImageList() {
         //省略异步回调 ... ...
-        var imageList= imageDataSource?.getImageList()
+        var imageList = imageDataSource?.getImageList()
         imageList?.let {
             var listAdapter= ListAdapter(imageList)
             lvList.adapter= listAdapter
@@ -400,7 +403,7 @@ class ChooseImageActivity : AppCompatActivity() {
 
 按照既有的代码结构，可以通过Copy Paste快速地实现这个功能
 
-``` 
+```kotlin
 interface FileDataSource{
     fun getFileList():List<FileInfo>
 }
@@ -428,7 +431,7 @@ class RemoteFileSource :FileDataSource{
 
 # 类型参数化
 
-``` 
+```kotlin
 data class BaseFileInfo(val id:String,val name:String,val path:String,val size:String)
 
 interface FileDataSource<T:BaseFileInfo>{
@@ -441,7 +444,7 @@ interface FileDataSource<T:BaseFileInfo>{
 
 # 实现
 
-``` 
+```kotlin
 class ChooseFileActivity: AppCompatActivity() {
 
    var fileDataSource: FileDataSource<BaseFileInfo>?=null
@@ -452,10 +455,10 @@ class ChooseFileActivity: AppCompatActivity() {
     }
 
     private fun showFileList() {
-        var imageList= fileDataSource?.getFileList()
+        var imageList = fileDataSource?.getFileList()
         imageList?.let {
-            var listAdapter= ListAdapter(imageList)
-            lvList.adapter= listAdapter
+            var listAdapter = ListAdapter(imageList)
+            lvList.adapter = listAdapter
         }
     }
 }
@@ -471,7 +474,7 @@ class ChooseFileActivity: AppCompatActivity() {
 
 ## 增加排序字段及排序类型
 
-``` 
+```kotlin
 interface FileDataSource<T:BaseFileInfo>{
     fun getFileList(orderKey:String,orderDesc:Boolean):List<T>
 }
@@ -493,14 +496,14 @@ interface FileDataSource<T:BaseFileInfo>{
 
 # 条件动态配置
 
-``` 
+```kotlin
 class Condition{
     //字段
-    val field:String=""
+    val field:String = ""
     //类型
-    val type:OptType=OptType.NULL
+    val type:OptType = OptType.NULL
     //值
-    val value:String=""
+    val value:String = ""
 }
 
 interface FileDataSource<T:BaseFileInfo> {
@@ -526,7 +529,7 @@ interface FileDataSource<T:BaseFileInfo> {
 
 # 建造者模式
 
-``` 
+```kotlin
   ChooseFileActivity.Builder(this)
             .setCondition(mutableListOf())
             .setDataSource(RemoteFileSource())
