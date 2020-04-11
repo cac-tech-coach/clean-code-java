@@ -6,10 +6,14 @@ paginate: true
 ---
 <style>
 .container{
+
     display: flex;
+
 }
 .col{
+
     flex: 1;
+
 }
 </style>
 
@@ -17,25 +21,24 @@ paginate: true
 
 ![bg brightness:0.2](https://upload-images.jianshu.io/upload_images/4099-04dfbbf2072ad2af.jpg?imageMogr2/auto-orient/strip|imageView2/2/w/772/format/webp)
 
-
 # <!-- fit -->**正交设计**&emsp; &emsp; 
-
 
 CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
 <!-- _class: invert -->
+
 # 软件设计是为了什么:question:
 
 ---
 
 软件设计最重要的目的是**实现功能**。随着时间推移，不可提前预知的**不确定性**导致软件的复杂度不断增加，超出了开发者的**认知极限**，功能实现越来越难。软件设计是解决这个问题的重要手段。
 
-
 > 软件设计是为了在让软件在**长期范围**内**容易应对变化**。——*Kent Beck*
 
 ---
 <!-- _class: invert -->
+
 # 软件设计如何解决复杂性？如何长期应对变化:question:
 
 ---
@@ -44,11 +47,12 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 # 模块化，分而治之 
 
-- 讲影响范围局部化
-- 带来了模块的复用
+* 讲影响范围局部化
+* 带来了模块的复用
 
 ---
 <!-- _class: invert -->
+
 # 软件模块怎么分，又怎么合:question:
 
 ---
@@ -59,23 +63,24 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 软件设计的**最基本原则**
 
-- 只有**关联(?)**紧密的事物才能并应该被放在一起
-- 软件模块之间尽可能不要相互**影响(?)**
-- 一方的**变化**不会影响另外一方的**变化**（**正交**）
+* 只有**关联(?)**紧密的事物才能并应该被放在一起
+* 软件模块之间尽可能不要相互**影响(?)**
+* 一方的**变化**不会影响另外一方的**变化**（**正交**）
 
 ---
 <!-- _class: invert -->
+
 # 你还能想到哪些软件设计原则:question:
 
 ---
 
-# S.O.L.I.D 原则
+# S. O. L. I. D 原则
 
-- S 单一职责原则
-- O 开闭原则
-- L 里氏替换原则
-- I 接口隔离原则
-- D 依赖倒置原则
+* S 单一职责原则
+* O 开闭原则
+* L 里氏替换原则
+* I 接口隔离原则
+* D 依赖倒置原则
 
 > 一个类只应该有一个**变化原因**（**职责**）。——Robert. C. Martin
 
@@ -135,6 +140,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 ---
 
 ![bg left:34% fit 70%](https://godsme.github.io/img/relation.png)
+
 # 正交设计四原则
 
 1️⃣消除重复（避免一个变化导致多处修改）
@@ -147,6 +153,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 ---
 
 <!-- 
+
 # XP 的简单设计原则
 
 1. 通过测试
@@ -172,7 +179,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 # 实现
 
-```java
+``` java
 class ChooseLocalImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -205,7 +212,7 @@ class ChooseLocalImageActivity : AppCompatActivity() {
 
  # 快速实现
 
-```java
+``` java
 class ChooseRemoteImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -253,13 +260,13 @@ class ChooseRemoteImageActivity : AppCompatActivity() {
 
 ## <!--fit--> 1️⃣ 消除重复 &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
 
-> 对于完全重复的代码进行消除，合二为一，会让系统更加高内聚、低耦合
+> 避免一个变化导致多处修改
 
 ---
 
  # 实现 
 
-```java
+``` java
 class ChooseImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -309,7 +316,7 @@ class ChooseImageActivity : AppCompatActivity() {
 
 ## <!--fit--> 2️⃣ 分离不同变化&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
 
-> 我们经常需要因为同一类原因，修改某个模块/类。而这个模块的其它部分却保持不变
+> 避免多个变化导致一处修改
 
 ---
 
@@ -323,7 +330,7 @@ class ChooseImageActivity : AppCompatActivity() {
 
 # 分离(单一职责原则)
 
-```java
+``` java
 interface ImageDataSource{
     fun getImageList():List<Image>
 }
@@ -347,6 +354,14 @@ class RemoteImageSource :ImageDataSource{
 }
 
 ```
+
+---
+
+<!-- _class: invert -->
+
+## <!--fit--> 3️⃣  缩小依赖范围&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
+
+> 不依赖不必要的依赖
 
 ---
 
@@ -409,13 +424,7 @@ class RemoteFileSource :FileDataSource{
 
 ---
 
-<!-- _class: invert -->
-
-## <!--fit--> 3️⃣  向着稳定的方向依赖&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
-
-> 耦合点越稳定，依赖方受耦合变化影响的概率就越低
-
----
+ 
 
 # 类型参数化
 
@@ -476,9 +485,9 @@ interface FileDataSource<T:BaseFileInfo>{
 
 <!-- _class: invert -->
 
-## <!--fit--> 4️⃣ 缩小依赖范围&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
+## <!--fit--> 4️⃣ 向着稳定的方向依赖&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
 
-> 两个模块之间并不存在耦合，它们的都共同耦合在 API 上。因而 需要考虑API 如何定义才能降低耦合度
+> 不依赖不稳定的依赖
 
 ---
 
@@ -531,3 +540,4 @@ interface FileDataSource<T:BaseFileInfo> {
 # <!--fit-->一切围绕着变化
 
 # <!--fit-->由变化驱动，反过来让系统演进的更容易应对变化
+
