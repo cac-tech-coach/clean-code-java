@@ -4,6 +4,159 @@ theme: default
 class: lead
 paginate: true
 ---
+<style>
+.container{
+    display: flex;
+}
+.col{
+    flex: 1;
+}
+</style>
+
+<!-- _class: invert -->
+
+![bg brightness:0.2](https://upload-images.jianshu.io/upload_images/4099-04dfbbf2072ad2af.jpg?imageMogr2/auto-orient/strip|imageView2/2/w/772/format/webp)
+
+
+# <!-- fit -->**正交设计**&emsp; &emsp; 
+
+
+CAC@OPPO by 黄俊彬 & 覃宇
+
+---
+<!-- _class: invert -->
+# 软件设计是为了什么:question:
+
+---
+
+软件设计最重要的目的是**实现功能**。随着时间推移，不可提前预知的**不确定性**导致软件的复杂度不断增加，超出了开发者的**认知极限**，功能实现越来越难。软件设计是解决这个问题的重要手段。
+
+
+> 软件设计是为了在让软件在**长期范围**内**容易应对变化**。——*Kent Beck*
+
+---
+<!-- _class: invert -->
+# 软件设计如何解决复杂性？如何长期应对变化:question:
+
+---
+
+![bg right:55% contain 90%](https://godsme.github.io/img/module.png)
+
+# 模块化，分而治之 
+
+- 讲影响范围局部化
+- 带来了模块的复用
+
+---
+<!-- _class: invert -->
+# 软件模块怎么分，又怎么合:question:
+
+---
+
+![bg right:55% contain 90%](https://godsme.github.io/img/orth1.png)
+
+# 高内聚，低耦合
+
+软件设计的**最基本原则**
+
+- 只有**关联(?)**紧密的事物才能并应该被放在一起
+- 软件模块之间尽可能不要相互**影响(?)**
+- 一方的**变化**不会影响另外一方的**变化**（**正交**）
+
+---
+<!-- _class: invert -->
+# 你还能想到哪些软件设计原则:question:
+
+---
+
+# S.O.L.I.D 原则
+
+- S 单一职责原则
+- O 开闭原则
+- L 里氏替换原则
+- I 接口隔离原则
+- D 依赖倒置原则
+
+> 一个类只应该有一个**变化原因**（**职责**）。——Robert. C. Martin
+
+---
+<!-- _class: invert -->
+
+# 如何在编码开发时贯彻这些原则:question:
+
+---
+
+# 避免一个变化导致多处修改
+
+遵循**单一职责原则**，**消除重复**
+
+![bg right:65% contain 90%](https://godsme.github.io/img/srp1.png)
+
+---
+
+# 避免多个变化导致一处修改
+
+遵循**单一职责原则**，拆分模块，**分离不同变化方向**
+
+![bg right:65% contain 90%](https://godsme.github.io/img/srp2.png)
+
+---
+
+# 避免一个变化导致多处修改
+
+遵循**开闭原则**，提取可以扩展的接口，**分离不同变化方向**
+
+![bg right:65% contain 90%](https://godsme.github.io/img/ocp.png)
+
+---
+
+# 不依赖不稳定的依赖
+
+遵循**里氏替换原则**，子类实现不能破坏父类被依赖的稳定接口，**向稳定的方向依赖**
+
+![bg right:65% contain 90%](https://godsme.github.io/img/lsp.png)
+
+---
+
+# 不依赖不必要的依赖
+
+遵循**接口隔离原则**，拆分接口，**缩小依赖的范围**
+
+![bg right:65% contain 80%](https://godsme.github.io/img/isp.png)
+
+---
+
+# 不依赖不稳定的依赖
+
+循**依赖倒置原则**，从“上层”定义稳定接口，“下层”实现向**稳定的方向依赖**
+
+![bg right:65% contain 80%](https://godsme.github.io/img/dip.png)
+
+---
+
+![bg left:34% fit 70%](https://godsme.github.io/img/relation.png)
+# 正交设计四原则
+
+1️⃣消除重复（避免一个变化导致多处修改）
+2️⃣分离不同变化方向（避免多个变化导致一处修改）
+3️⃣缩小依赖范围（不依赖不必要的依赖）
+4️⃣向着稳定的方向依赖（不依赖不稳定的依赖）
+
+<!-- 变化导致的修改，我们要努力消除变化发生时不必要的修改 -->
+
+---
+
+<!-- 
+# XP 的简单设计原则
+
+1. 通过测试
+2. 消除重复
+3. 揭示意图
+4. 最少元素
+
+![bg right:65% fit 90%](https://martinfowler.com/bliki/images/beckDesignRules/sketch.png)
+
+--- -->
 
 <!-- _class: invert -->
 
@@ -19,7 +172,7 @@ paginate: true
 
 # 实现
 
-``` 
+```java
 class ChooseLocalImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,9 +183,9 @@ class ChooseLocalImageActivity : AppCompatActivity() {
 
     private fun showImageList() {
         //省略异步回调 ... ...
-        var imageList=getLocalImageList()
-        var listAdapter=ListAdapter(imageList)
-        lvList.adapter= listAdapter
+        var imageList = getLocalImageList()
+        var listAdapter = ListAdapter(imageList)
+        lvList.adapter = listAdapter
     }
 
     private fun getLocalImageList():List<Image>{
@@ -42,7 +195,6 @@ class ChooseLocalImageActivity : AppCompatActivity() {
         return imageList
     }
 }
-
 ```
 
 ---
@@ -53,7 +205,7 @@ class ChooseLocalImageActivity : AppCompatActivity() {
 
  # 快速实现
 
-``` 
+```java
 class ChooseRemoteImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,14 +215,14 @@ class ChooseRemoteImageActivity : AppCompatActivity() {
     }
 
     private fun showImageList() {
-        var imageList=getRemoteImageList()
-        var listAdapter=ListAdapter(imageList)
+        var imageList = getRemoteImageList()
+        var listAdapter = ListAdapter(imageList)
         lvList.adapter= listAdapter
     }
 
     private fun getRemoteImageList():List<Image>{
         //省略异步回调 ... ...
-        var imageList= mutableListOf<Image>()
+        var imageList = mutableListOf<Image>()
         //从通过API读出图片列表
         //... ...
         return imageList
@@ -107,7 +259,7 @@ class ChooseRemoteImageActivity : AppCompatActivity() {
 
  # 实现 
 
-``` 
+```java
 class ChooseImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,13 +271,13 @@ class ChooseImageActivity : AppCompatActivity() {
     private fun showImageList() {
         var imageList= listOf<Image>()
         //省略异步回调 ... ...
-        if(isLocal){
-            imageList=getLocalImageList()
-        }else{
-            imageList=getRemoteImageList()
+        if (isLocal) {
+            imageList = getLocalImageList()
+        } else {
+            imageList = getRemoteImageList()
         }
-        var listAdapter=ListAdapter(imageList)
-        lvList.adapter= listAdapter
+        var listAdapter = ListAdapter(imageList)
+        lvList.adapter = listAdapter
     }
 
     fun getLocalImageList():List<Image>{
@@ -155,7 +307,7 @@ class ChooseImageActivity : AppCompatActivity() {
 
 <!-- _class: invert -->
 
-## <!--fit--> 2️⃣ 分离关注点&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
+## <!--fit--> 2️⃣ 分离不同变化&emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
 
 > 我们经常需要因为同一类原因，修改某个模块/类。而这个模块的其它部分却保持不变
 
@@ -171,7 +323,7 @@ class ChooseImageActivity : AppCompatActivity() {
 
 # 分离(单一职责原则)
 
-``` 
+```java
 interface ImageDataSource{
     fun getImageList():List<Image>
 }
@@ -379,4 +531,3 @@ interface FileDataSource<T:BaseFileInfo> {
 # <!--fit-->一切围绕着变化
 
 # <!--fit-->由变化驱动，反过来让系统演进的更容易应对变化
-
