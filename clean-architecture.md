@@ -15,53 +15,6 @@ paginate: true
 CAC@OPPO by 黄俊彬 & 覃宇
 
 ---
-<!-- _class: invert -->
-
-# 为什么编写高质量的软件会非常困难和复杂:question:
-
----
-
-# 适应业务增长和变化
-
-* 健壮性
-* 可测性
-* 可维护性
-* 可扩展性
-
----
-
-![bg right:50% contain 90%](https://upload-images.jianshu.io/upload_images/2014593-e44c7a6b3e87a58b.png?imageMogr2/auto-orient/strip|imageView2/2/w/647/format/webp)
-
-# 整洁架构 
-
-* 独立于框架
-* 可测试
-* 独立于UI
-* 独立于数据库
-* 独立于外部依赖
-
-<!-- 
-Entities: 应用业务实体对象
-Use Cases: 协调实体对象之间的数据流
-Interface Adapters: 接口适配层
-Frameworks and Drivers: UI层
--->
-
----
-
-# 依赖规则
-
- 
-
-> 依赖项只能指向内部，内部的模块与外部模块之间隔离
-
----
-
-<!-- _class: invert -->
-
-# 在Android上下文中，有对应的整洁架构设计:question:
-
----
 
  <!-- _class: invert -->
 
@@ -122,7 +75,17 @@ Frameworks and Drivers: UI层
 
  ---
 
-# Code
+# Task Domain
+
+```java
+public final class Task {
+    private final String mId;
+    private final String mTitle;
+    private final String mDescription;
+    private final boolean mCompleted;
+    // ... ...
+}
+```
 
 ``` java
 public class CompleteTask extends UseCase<CompleteTask.RequestValues, CompleteTask.ResponseValue> {
@@ -140,6 +103,34 @@ public class CompleteTask extends UseCase<CompleteTask.RequestValues, CompleteTa
 
  ---
 
+ # Statistics Domain
+
+ ```java
+ public class Statistics {
+    private final int completedTasks;
+    private final int activeTasks;
+    //... ...
+ }
+```
+``` java
+public class GetStatistics extends UseCase<GetStatistics.RequestValues, GetStatistics.ResponseValue> {
+
+    private final TasksRepository mTasksRepository;
+
+    @Override
+    protected void executeUseCase(RequestValues requestValues) {
+        mTasksRepository.getTasks(new TasksDataSource.LoadTasksCallback() {
+            @Override
+            public void onTasksLoaded(List<Task> tasks) {
+                int activeTasks = 0;
+                int completedTasks = 0;
+                // We calculate number of active and completed tasks
+            }
+        });
+    }
+```
+ ---
+
  # Presentation Layer (表现层)
 
  *  根据Domain Layer的数据进行界面显示
@@ -150,7 +141,7 @@ public class CompleteTask extends UseCase<CompleteTask.RequestValues, CompleteTa
 
 
  ---
- # Code
+ # Presenter
  
 
 ``` 
@@ -239,9 +230,3 @@ public class TasksScreenTest {
  }
 
  ```
- ---
- <!-- _class: invert -->
-
-# <!--fit--> &emsp; &emsp;  没有银弹  &emsp; &emsp;  
-
-> 有些架构风格号称是所有形式的软件的“银弹”。然而，优秀的设计这应该选择最符合解决特定问题需要的风格。——Roy Fielding, 2000 [1]
