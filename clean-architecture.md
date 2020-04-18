@@ -24,11 +24,20 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
  # TODO
 
- 
 
 ![bg right:60% contain 50%](https://github.com/googlesamples/android-architecture/wiki/images/todoapp.gif)
 
  ---
+
+ 
+
+# MVP的M、V、P，对应整洁架构那个Layer:question:
+
+![bg right:50% contain 90%](https://upload-images.jianshu.io/upload_images/4099-04dfbbf2072ad2af.jpg?imageMogr2/auto-orient/strip|imageView2/2/w/772/format/webp)
+
+
+---
+
 
 ![bg right:100% contain 90%](https://github.com/googlesamples/android-architecture/wiki/images/mvp-clean.png)
 
@@ -45,9 +54,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
 
  ---
- # Code
-
- 
+ # 接口
 
 ``` java
  public interface TasksDataSource {
@@ -230,3 +237,7 @@ public class TasksScreenTest {
  }
 
  ```
+---
+ # 示例
+
+ Github：https://github.com/android/architecture-samples/tree/todo-mvp-clean
