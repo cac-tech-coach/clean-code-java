@@ -71,7 +71,7 @@ CAC@OPPO by 黄俊彬 & 覃宇
 
  ---
 
-# Domain Layer (领域层)
+# Domain Layer (领域层) 
 
 * 包含所有的业务逻辑
 * Use case 定义应用程序需要的操作
@@ -238,6 +238,11 @@ public class TasksScreenTest {
 
  ```
 ---
- # 示例
+ # 示例（Java）
 
- Github：https://github.com/android/architecture-samples/tree/todo-mvp-clean
+android/architecture-samples
+https://github.com/android/architecture-samples/tree/todo-mvp-clean
+
+ # 推荐（Kotlin）
+ android10/Android-CleanArchitecture-Kotlin
+ https://github.com/android10/Android-CleanArchitecture-Kotlin
